@@ -14,7 +14,6 @@ export default function AmbassadorProfilePage() {
   const [submitting, setSubmitting] = useState(false)
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const supabase = createClient()
 
   const [formData, setFormData] = useState({
     buyer_name: '',
@@ -30,6 +29,7 @@ export default function AmbassadorProfilePage() {
   const fetchAmbassador = async () => {
     setLoading(true)
     try {
+      const supabase = createClient()
       const { data, error } = await supabase
         .from('ambassadors')
         .select('*')
@@ -53,6 +53,7 @@ export default function AmbassadorProfilePage() {
     setError(null)
 
     try {
+      const supabase = createClient()
       const { error: insertError } = await supabase
         .from('contact_requests')
         .insert({

@@ -27,7 +27,6 @@ export default function AmbassadorsPage() {
   const [filterState, setFilterState] = useState('')
   const [filterModel, setFilterModel] = useState('')
   const router = useRouter()
-  const supabase = createClient()
 
   useEffect(() => {
     fetchAmbassadors()
@@ -40,6 +39,7 @@ export default function AmbassadorsPage() {
   const fetchAmbassadors = async () => {
     setLoading(true)
     try {
+      const supabase = createClient()
       const { data, error } = await supabase
         .from('ambassadors')
         .select('*')

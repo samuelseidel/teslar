@@ -29,7 +29,6 @@ export default function CreateAmbassadorProfile() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()
-  const supabase = createClient()
 
   const [formData, setFormData] = useState({
     full_name: '',
@@ -49,6 +48,8 @@ export default function CreateAmbassadorProfile() {
     setError(null)
 
     try {
+      const supabase = createClient()
+
       // Get current user
       const { data: { user } } = await supabase.auth.getUser()
 
