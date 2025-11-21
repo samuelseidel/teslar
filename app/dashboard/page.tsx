@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import VehiclesSection from './components/VehiclesSection'
+import VehiclesSectionNew from './components/VehiclesSectionNew'
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -104,7 +104,7 @@ export default async function DashboardPage() {
         </div>
 
         {/* Vehicles Section */}
-        <VehiclesSection ambassadorId={ambassador.id} />
+        <VehiclesSectionNew ambassadorId={ambassador.id} />
 
         {/* Contact Requests Section */}
         <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 shadow-2xl border border-white/20 mt-8">
