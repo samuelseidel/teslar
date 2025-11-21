@@ -236,16 +236,14 @@ export default function VehiclesPage() {
                     <p className="text-gray-400 text-sm">Rok: {vehicle.tesla_year}</p>
                   </div>
 
-                  {vehicle.description && (
-                    <p className="text-gray-300 text-sm mb-4 line-clamp-2">
-                      {vehicle.description}
-                    </p>
-                  )}
-
                   {/* Ambassador Info */}
                   <div className="border-t border-white/10 pt-4">
                     <p className="text-gray-400 text-xs mb-1">Majitel</p>
-                    <p className="text-white font-medium">{vehicle.ambassador.full_name}</p>
+                    <p className="text-white font-medium">
+                      {vehicle.ambassador.first_name && vehicle.ambassador.last_name
+                        ? `${vehicle.ambassador.first_name} ${vehicle.ambassador.last_name.charAt(0)}.`
+                        : vehicle.ambassador.full_name}
+                    </p>
                     <p className="text-gray-400 text-sm">
                       {vehicle.ambassador.city}, {vehicle.ambassador.region}
                     </p>
