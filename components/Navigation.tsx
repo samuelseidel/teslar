@@ -42,7 +42,7 @@ export default function Navigation() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <Link href="/" className="flex items-center">
-            <span className="text-2xl font-bold text-white">Tesla<span className="text-red-500">Connect</span></span>
+            <span className="text-2xl font-bold text-white">Tesla<span className="text-red-600">Connect</span></span>
           </Link>
 
           <div className="flex items-center gap-4">
@@ -62,7 +62,7 @@ export default function Navigation() {
                   onClick={() => setShowUserMenu(!showUserMenu)}
                   className="flex items-center gap-2 text-gray-300 hover:text-white transition-colors"
                 >
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-red-500 to-red-700 flex items-center justify-center">
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-red-600 to-red-700 flex items-center justify-center">
                     <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                     </svg>
@@ -109,7 +109,7 @@ export default function Navigation() {
                       </Link>
                       <button
                         onClick={handleLogout}
-                        className="w-full text-left px-4 py-3 text-red-400 hover:bg-white/10 hover:text-red-300 transition-colors border-t border-white/10"
+                        className="w-full text-left px-4 py-3 text-red-600 hover:bg-white/10 hover:text-red-500 transition-colors border-t border-white/10"
                       >
                         <div className="flex items-center gap-2">
                           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -18,7 +18,7 @@ export default function Home() {
           <h1 className="text-6xl md:text-8xl font-bold text-white mb-8 leading-tight">
             Není to jen auto.
             <br />
-            <span className="bg-gradient-to-r from-red-500 to-red-600 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-red-600 to-red-700 bg-clip-text text-transparent">
               Je to způsob života.
             </span>
           </h1>
@@ -68,7 +68,7 @@ export default function Home() {
             {/* Step 1 */}
             <div className="group relative">
               <div className="bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-lg rounded-3xl p-10 border border-white/10 hover:border-red-500/50 transition-all hover:transform hover:scale-105 h-full">
-                <div className="w-20 h-20 bg-gradient-to-br from-red-500 to-red-600 rounded-2xl flex items-center justify-center mb-8 shadow-lg shadow-red-500/50">
+                <div className="w-20 h-20 bg-gradient-to-br from-red-600 to-red-700 rounded-2xl flex items-center justify-center mb-8 shadow-lg shadow-red-600/50">
                   <span className="text-white text-3xl font-bold">1</span>
                 </div>
                 <h3 className="text-3xl font-bold text-white mb-6">Vyberte si</h3>
@@ -114,11 +114,11 @@ export default function Home() {
             {/* Left side - Content */}
             <div>
               <div className="inline-block px-4 py-2 bg-red-500/20 rounded-full mb-6">
-                <span className="text-red-400 font-semibold">Pro zájemce</span>
+                <span className="text-red-600 font-semibold">Pro zájemce</span>
               </div>
               <h2 className="text-5xl md:text-6xl font-bold text-white mb-8 leading-tight">
                 Zvažujete<br />přechod na<br />
-                <span className="text-red-500">elektromobilitu?</span>
+                <span className="text-red-600">elektromobilitu?</span>
               </h2>
               <p className="text-xl text-gray-300 mb-10 leading-relaxed">
                 Nezávislé názory od lidí, kteří to prožívají denně. Bez marketing sloganů, jen upřímnost.
@@ -226,7 +226,7 @@ export default function Home() {
           </h2>
           <p className="text-2xl md:text-3xl text-gray-300 mb-16 max-w-3xl mx-auto leading-relaxed">
             Ať už hledáte informace nebo chcete sdílet svůj příběh,<br />
-            <span className="text-red-400 font-semibold">jsme tu pro vás.</span>
+            <span className="text-red-600 font-semibold">jsme tu pro vás.</span>
           </p>
 
           <div className="grid md:grid-cols-2 gap-8 mb-16">

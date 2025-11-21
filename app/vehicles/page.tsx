@@ -314,7 +314,7 @@ export default function VehiclesPage() {
                       )}
                     </div>
                     {vehicle.tesla_variant && (
-                      <p className="text-red-400 font-medium">{vehicle.tesla_variant}</p>
+                      <p className="text-red-600 font-medium">{vehicle.tesla_variant}</p>
                     )}
                   </div>
 

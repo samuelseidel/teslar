@@ -156,7 +156,7 @@ export default function VehicleDetailPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <Link href="/" className="text-2xl font-bold text-white">
-              Tesla<span className="text-red-500">Connect</span>
+              Tesla<span className="text-red-600">Connect</span>
             </Link>
             <div className="flex items-center gap-4">
               <Link href="/vehicles" className="text-gray-300 hover:text-white transition-colors">
@@ -190,7 +190,7 @@ export default function VehicleDetailPage() {
                 Tesla {vehicle.tesla_model} <span className="text-gray-400 font-normal">{vehicle.tesla_year}</span>
               </h1>
               {vehicle.tesla_variant && (
-                <p className="text-2xl text-red-400 font-medium mb-6">{vehicle.tesla_variant}</p>
+                <p className="text-2xl text-red-600 font-medium mb-6">{vehicle.tesla_variant}</p>
               )}
 
               {vehicle.description && (
@@ -204,7 +204,7 @@ export default function VehicleDetailPage() {
             {(vehicle.vin || vehicle.vehicle_registry_data) && (
               <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 shadow-2xl border border-white/20">
                 <div className="flex items-center gap-3 mb-6">
-                  <svg className="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                   </svg>
                   <h3 className="text-2xl font-bold text-white">Technické specifikace</h3>
@@ -297,7 +297,7 @@ export default function VehicleDetailPage() {
               <div className="flex gap-4 mb-6">
                 {/* Profile Picture */}
                 <div className="flex-shrink-0">
-                  <div className="w-16 h-16 rounded-full border-2 border-red-500 bg-gradient-to-br from-red-500 to-red-700 overflow-hidden">
+                  <div className="w-16 h-16 rounded-full border-2 border-red-600 bg-gradient-to-br from-red-600 to-red-700 overflow-hidden">
                     {vehicle.ambassador.profile_image_url ? (
                       <img
                         src={vehicle.ambassador.profile_image_url}
