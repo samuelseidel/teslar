@@ -278,28 +278,28 @@ export default function VehicleDetailPage() {
               <h3 className="text-xl font-bold text-white mb-4">Vehicle Owner</h3>
 
               {/* Profile Picture */}
-              {vehicle.ambassador.profile_image_url && (
-                <div className="flex justify-center mb-4">
-                  <img
-                    src={vehicle.ambassador.profile_image_url}
-                    alt={vehicle.ambassador.full_name}
-                    className="w-24 h-24 rounded-full object-cover border-2 border-red-500"
-                  />
+              <div className="flex justify-center mb-4">
+                <div className="w-24 h-24 rounded-full border-2 border-red-500 bg-gradient-to-br from-red-500 to-red-700 overflow-hidden">
+                  {vehicle.ambassador.profile_image_url ? (
+                    <img
+                      src={vehicle.ambassador.profile_image_url}
+                      alt={vehicle.ambassador.full_name}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <svg className="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                      </svg>
+                    </div>
+                  )}
                 </div>
-              )}
+              </div>
 
               <div className="space-y-3">
                 <div>
                   <p className="text-gray-400 text-sm">Name</p>
                   <p className="text-white font-medium">{vehicle.ambassador.full_name}</p>
-                </div>
-
-                <div>
-                  <p className="text-gray-400 text-sm">Location</p>
-                  <p className="text-white">
-                    {vehicle.ambassador.city}, {vehicle.ambassador.region}
-                  </p>
-                  <p className="text-gray-400 text-sm">{vehicle.ambassador.country}</p>
                 </div>
 
                 {vehicle.ambassador.bio && (
