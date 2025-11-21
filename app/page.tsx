@@ -53,7 +53,7 @@ export default function Home() {
       </section>
 
       {/* How it Works Section - Full Viewport */}
-      <section className="min-h-screen flex items-center justify-center px-4 py-20">
+      <section className="min-h-screen flex items-center justify-center px-4 py-20 bg-white/5">
         <div className="max-w-7xl mx-auto w-full">
           <div className="text-center mb-20">
             <h2 className="text-5xl md:text-6xl font-bold text-white mb-6">
