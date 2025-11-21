@@ -218,7 +218,7 @@ export default function VehiclesPage() {
                   <div className="mb-4">
                     <div className="flex items-start justify-between gap-2 mb-1">
                       <h3 className="text-2xl font-bold text-white">
-                        {vehicle.tesla_model}
+                        Tesla {vehicle.tesla_model} <span className="text-gray-400 font-normal">{vehicle.tesla_year}</span>
                       </h3>
                       {vehicle.distance !== undefined && (
                         <span className="flex-shrink-0 px-3 py-1 bg-gradient-to-r from-blue-500/20 to-blue-600/20 border border-blue-500/50 text-blue-300 text-sm font-semibold rounded-full flex items-center gap-1.5">
@@ -233,7 +233,6 @@ export default function VehiclesPage() {
                     {vehicle.tesla_variant && (
                       <p className="text-red-400 font-medium">{vehicle.tesla_variant}</p>
                     )}
-                    <p className="text-gray-400 text-sm">Rok: {vehicle.tesla_year}</p>
                   </div>
 
                   {/* Ambassador Info */}
