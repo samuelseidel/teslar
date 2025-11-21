@@ -173,47 +173,49 @@ function PlacesAutocompleteInput({
 
   return (
     <div className={`${className}`}>
-      <div className="flex gap-2 mb-3">
-        <div className="relative flex-1 z-50">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-          <Input
-            ref={inputRef}
-            value={value}
-            onChange={handleInput}
-            onFocus={() => setIsOpen(true)}
-            disabled={!ready || isGettingLocation}
-            placeholder={placeholder}
-            className="pl-10 pr-10 bg-white/5 border-white/20 text-white placeholder-gray-400 focus:ring-red-500"
-          />
-          {value && !isGettingLocation && (
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              onClick={handleClear}
-              className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 p-0 hover:bg-white/10"
-            >
-              <X className="w-4 h-4 text-gray-400" />
-            </Button>
-          )}
-        </div>
+      <div className="relative z-50">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
+        <Input
+          ref={inputRef}
+          value={value}
+          onChange={handleInput}
+          onFocus={() => setIsOpen(true)}
+          disabled={!ready || isGettingLocation}
+          placeholder={placeholder}
+          className="pl-10 pr-20 bg-white/5 border-white/20 text-white placeholder-gray-400 focus:ring-red-500 transition-all"
+        />
 
-        {/* Use My Location Button */}
+        {/* Clear Button - shows when there's a value */}
+        {value && !isGettingLocation && (
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={handleClear}
+            className="absolute right-10 top-1/2 -translate-y-1/2 h-8 w-8 p-0 hover:bg-white/10 transition-colors"
+            title="Vymazat"
+          >
+            <X className="w-4 h-4 text-gray-400 hover:text-white transition-colors" />
+          </Button>
+        )}
+
+        {/* Location Button - always visible on the right */}
         <Button
           type="button"
+          variant="ghost"
+          size="sm"
           onClick={handleUseMyLocation}
           disabled={!ready || isGettingLocation}
-          variant="outline"
-          className="bg-white/5 border-white/20 text-white hover:bg-white/10 hover:border-white/30 flex-shrink-0"
+          className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 p-0 hover:bg-white/10 transition-colors disabled:opacity-50"
+          title="Použít moji lokaci"
         >
-          <Locate className={`w-4 h-4 mr-2 ${isGettingLocation ? 'animate-pulse' : ''}`} />
-          {isGettingLocation ? 'Načítání...' : 'Použít moji lokaci'}
+          <Locate className={`w-4 h-4 text-gray-400 hover:text-white transition-colors ${isGettingLocation ? 'animate-pulse text-blue-400' : ''}`} />
         </Button>
       </div>
 
       {/* Location Error */}
       {locationError && (
-        <div className="rounded-md bg-yellow-500/20 border border-yellow-500/50 p-3">
+        <div className="rounded-md bg-yellow-500/20 border border-yellow-500/50 p-3 mt-2 animate-in fade-in duration-200">
           <p className="text-sm text-yellow-300">{locationError}</p>
         </div>
       )}

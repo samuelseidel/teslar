@@ -87,8 +87,11 @@ export default function VehiclesPage() {
     setUserLocation(location)
   }
 
-  const clearFilters = () => {
+  const clearLocationFilter = () => {
     setUserLocation(null)
+  }
+
+  const clearModelFilter = () => {
     setFilterModel('')
   }
 
@@ -129,7 +132,7 @@ export default function VehiclesPage() {
 
         {/* Filters */}
         <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 shadow-2xl border border-white/20 mb-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block text-sm font-medium text-gray-200 mb-2">
                 Vaše lokace
@@ -140,38 +143,56 @@ export default function VehiclesPage() {
                 className="w-full"
               />
               {userLocation && (
-                <p className="text-xs text-green-400 mt-1">
-                  📍 {userLocation.formattedAddress}
+                <p className="text-xs text-green-400 mt-2 flex items-center gap-1 animate-in fade-in duration-200">
+                  <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
+                  </svg>
+                  {userLocation.formattedAddress}
                 </p>
               )}
             </div>
 
             <div>
               <label htmlFor="model" className="block text-sm font-medium text-gray-200 mb-2">
-                Filtrovat podle modelu
+                Model Tesla
               </label>
-              <select
-                id="model"
-                value={filterModel}
-                onChange={(e) => setFilterModel(e.target.value)}
-                className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500"
-              >
-                <option value="">Všechny modely</option>
-                {TESLA_MODEL_NAMES.map((model) => (
-                  <option key={model} value={model} className="bg-gray-800">
-                    {model}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="flex items-end">
-              <button
-                onClick={clearFilters}
-                className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-lg text-white hover:bg-white/10 transition-colors"
-              >
-                Vymazat filtry
-              </button>
+              <div className="relative">
+                <select
+                  id="model"
+                  value={filterModel}
+                  onChange={(e) => setFilterModel(e.target.value)}
+                  className="w-full px-4 py-3 pr-10 bg-white/5 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500 transition-all appearance-none cursor-pointer"
+                >
+                  <option value="">Všechny modely</option>
+                  {TESLA_MODEL_NAMES.map((model) => (
+                    <option key={model} value={model} className="bg-gray-800">
+                      {model}
+                    </option>
+                  ))}
+                </select>
+                {/* Custom dropdown arrow */}
+                <svg
+                  className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+                {/* Clear button for model filter */}
+                {filterModel && (
+                  <button
+                    type="button"
+                    onClick={clearModelFilter}
+                    className="absolute right-10 top-1/2 -translate-y-1/2 h-6 w-6 flex items-center justify-center hover:bg-white/10 rounded transition-colors"
+                    title="Vymazat model"
+                  >
+                    <svg className="w-4 h-4 text-gray-400 hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                )}
+              </div>
             </div>
           </div>
 
