@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { VehicleWithAmbassador } from '@/lib/types/database.types'
 import Link from 'next/link'
-import { getCountriesList, getRegionsForCountry, getCountry } from '@/lib/constants/countries'
 import { TESLA_MODEL_NAMES } from '@/lib/constants/tesla-variants'
 
 export default function VehiclesPage() {
@@ -12,10 +11,7 @@ export default function VehiclesPage() {
   const [filteredVehicles, setFilteredVehicles] = useState<VehicleWithAmbassador[]>([])
   const [loading, setLoading] = useState(true)
   const [searchCity, setSearchCity] = useState('')
-  const [filterCountry, setFilterCountry] = useState('')
-  const [filterRegion, setFilterRegion] = useState('')
   const [filterModel, setFilterModel] = useState('')
-  const [availableRegions, setAvailableRegions] = useState<string[]>([])
 
   useEffect(() => {
     fetchVehicles()
@@ -23,19 +19,7 @@ export default function VehiclesPage() {
 
   useEffect(() => {
     filterVehicles()
-  }, [vehicles, searchCity, filterCountry, filterRegion, filterModel])
-
-  useEffect(() => {
-    if (filterCountry) {
-      setAvailableRegions(getRegionsForCountry(filterCountry))
-      // Reset region if it's not valid for the new country
-      if (filterRegion && !getRegionsForCountry(filterCountry).includes(filterRegion)) {
-        setFilterRegion('')
-      }
-    } else {
-      setAvailableRegions([])
-    }
-  }, [filterCountry])
+  }, [vehicles, searchCity, filterModel])
 
   const fetchVehicles = async () => {
     setLoading(true)
@@ -75,14 +59,6 @@ export default function VehiclesPage() {
       )
     }
 
-    if (filterCountry) {
-      filtered = filtered.filter(v => v.ambassador.country_code === filterCountry)
-    }
-
-    if (filterRegion) {
-      filtered = filtered.filter(v => v.ambassador.region === filterRegion)
-    }
-
     if (filterModel) {
       filtered = filtered.filter(v => v.tesla_model === filterModel)
     }
@@ -92,8 +68,6 @@ export default function VehiclesPage() {
 
   const clearFilters = () => {
     setSearchCity('')
-    setFilterCountry('')
-    setFilterRegion('')
     setFilterModel('')
   }
 
@@ -108,13 +82,13 @@ export default function VehiclesPage() {
             </Link>
             <div className="flex items-center gap-4">
               <Link href="/" className="text-gray-300 hover:text-white transition-colors">
-                Home
+                Domů
               </Link>
               <Link
                 href="/auth/signup"
                 className="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 transition-colors font-medium"
               >
-                Become Ambassador
+                Stát se ambasadorem
               </Link>
             </div>
           </div>
@@ -125,74 +99,33 @@ export default function VehiclesPage() {
         {/* Header */}
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-            Find Tesla Vehicles
+            Najít Tesla vozidla
           </h1>
           <p className="text-xl text-gray-300">
-            Browse available Tesla vehicles for test drives in your area
+            Prohlédněte si dostupná Tesla vozidla pro testovací jízdy ve vaší oblasti
           </p>
         </div>
 
         {/* Filters */}
         <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 shadow-2xl border border-white/20 mb-8">
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <label htmlFor="city" className="block text-sm font-medium text-gray-200 mb-2">
-                Search by City
+                Hledat podle města
               </label>
               <input
                 type="text"
                 id="city"
                 value={searchCity}
                 onChange={(e) => setSearchCity(e.target.value)}
-                placeholder="Enter city name"
+                placeholder="Zadejte název města"
                 className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500"
               />
             </div>
 
             <div>
-              <label htmlFor="country" className="block text-sm font-medium text-gray-200 mb-2">
-                Filter by Country
-              </label>
-              <select
-                id="country"
-                value={filterCountry}
-                onChange={(e) => setFilterCountry(e.target.value)}
-                className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500"
-              >
-                <option value="">All Countries</option>
-                {getCountriesList().map((country) => (
-                  <option key={country.code} value={country.code} className="bg-gray-800">
-                    {country.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label htmlFor="region" className="block text-sm font-medium text-gray-200 mb-2">
-                {filterCountry ? getCountry(filterCountry)?.regionType || 'Region' : 'Region'}
-              </label>
-              <select
-                id="region"
-                value={filterRegion}
-                onChange={(e) => setFilterRegion(e.target.value)}
-                disabled={!filterCountry}
-                className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500 disabled:opacity-50"
-              >
-                <option value="">
-                  {filterCountry ? 'All Regions' : 'Select country first'}
-                </option>
-                {availableRegions.map((region) => (
-                  <option key={region} value={region} className="bg-gray-800">
-                    {region}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div>
               <label htmlFor="model" className="block text-sm font-medium text-gray-200 mb-2">
-                Filter by Model
+                Filtrovat podle modelu
               </label>
               <select
                 id="model"
@@ -200,7 +133,7 @@ export default function VehiclesPage() {
                 onChange={(e) => setFilterModel(e.target.value)}
                 className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500"
               >
-                <option value="">All Models</option>
+                <option value="">Všechny modely</option>
                 {TESLA_MODEL_NAMES.map((model) => (
                   <option key={model} value={model} className="bg-gray-800">
                     {model}
@@ -214,13 +147,13 @@ export default function VehiclesPage() {
                 onClick={clearFilters}
                 className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-lg text-white hover:bg-white/10 transition-colors"
               >
-                Clear Filters
+                Vymazat filtry
               </button>
             </div>
           </div>
 
           <div className="mt-4 text-gray-300">
-            Showing {filteredVehicles.length} of {vehicles.length} vehicles
+            Zobrazeno {filteredVehicles.length} z {vehicles.length} vozidel
           </div>
         </div>
 
@@ -228,15 +161,15 @@ export default function VehiclesPage() {
         {loading ? (
           <div className="text-center py-12">
             <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-500"></div>
-            <p className="text-gray-300 mt-4">Loading vehicles...</p>
+            <p className="text-gray-300 mt-4">Načítání vozidel...</p>
           </div>
         ) : filteredVehicles.length === 0 ? (
           <div className="text-center py-12 bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20">
             <svg className="w-16 h-16 text-gray-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
             </svg>
-            <h3 className="text-xl font-semibold text-white mb-2">No vehicles found</h3>
-            <p className="text-gray-400">Try adjusting your filters to see more results</p>
+            <h3 className="text-xl font-semibold text-white mb-2">Žádná vozidla nenalezena</h3>
+            <p className="text-gray-400">Zkuste upravit filtry pro zobrazení více výsledků</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -271,7 +204,7 @@ export default function VehiclesPage() {
                     {vehicle.tesla_variant && (
                       <p className="text-red-400 font-medium">{vehicle.tesla_variant}</p>
                     )}
-                    <p className="text-gray-400 text-sm">Year: {vehicle.tesla_year}</p>
+                    <p className="text-gray-400 text-sm">Rok: {vehicle.tesla_year}</p>
                   </div>
 
                   {vehicle.description && (
@@ -282,7 +215,7 @@ export default function VehiclesPage() {
 
                   {/* Ambassador Info */}
                   <div className="border-t border-white/10 pt-4 mb-4">
-                    <p className="text-gray-400 text-xs mb-1">Owner</p>
+                    <p className="text-gray-400 text-xs mb-1">Majitel</p>
                     <p className="text-white font-medium">{vehicle.ambassador.full_name}</p>
                     <p className="text-gray-400 text-sm">
                       {vehicle.ambassador.city}, {vehicle.ambassador.region}
@@ -293,7 +226,7 @@ export default function VehiclesPage() {
                     href={`/vehicles/${vehicle.id}`}
                     className="block w-full text-center bg-red-600 text-white px-4 py-3 rounded-lg hover:bg-red-700 transition-colors font-medium"
                   >
-                    View Details & Contact
+                    Zobrazit detail a kontakt
                   </Link>
                 </div>
               </div>

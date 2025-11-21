@@ -28,17 +28,17 @@ interface AddressAutocompleteProps {
   label?: string
   required?: boolean
   className?: string
-  restrictToCountries?: string[] // ISO 3166-1 Alpha-2 country codes (e.g., ['cz', 'sk', 'de'])
+  restrictToCountries?: string[] // ISO 3166-1 Alpha-2 country codes - defaults to ['cz'] for Czech Republic
 }
 
 export default function AddressAutocomplete({
   onAddressSelect,
   defaultValue = '',
-  placeholder = 'Start typing your address...',
+  placeholder = 'Začněte psát vaši adresu...',
   label,
   required = false,
   className = '',
-  restrictToCountries,
+  restrictToCountries = ['cz'], // Default to Czech Republic only
 }: AddressAutocompleteProps) {
   const inputRef = useRef<HTMLInputElement>(null)
   const [isOpen, setIsOpen] = useState(false)

@@ -25,9 +25,9 @@ interface LocationSearchProps {
 
 export default function LocationSearch({
   onLocationSelect,
-  placeholder = 'Search by city or address...',
+  placeholder = 'Hledat podle města nebo adresy...',
   className = '',
-  restrictToCountries,
+  restrictToCountries = ['cz'], // Default to Czech Republic only
 }: LocationSearchProps) {
   const inputRef = useRef<HTMLInputElement>(null)
   const [isOpen, setIsOpen] = useState(false)

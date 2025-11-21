@@ -33,7 +33,7 @@ export default function VehicleCardNew({ vehicle, onDelete }: VehicleCardProps) 
                 <h3 className="text-xl font-semibold text-white">
                   {vehicle.tesla_model} {vehicle.tesla_variant}
                 </h3>
-                <p className="text-gray-400 text-sm">Year: {vehicle.tesla_year}</p>
+                <p className="text-gray-400 text-sm">Rok: {vehicle.tesla_year}</p>
               </div>
               <Badge
                 variant={vehicle.available ? "default" : "secondary"}
@@ -42,7 +42,7 @@ export default function VehicleCardNew({ vehicle, onDelete }: VehicleCardProps) 
                   : "bg-gray-500/20 text-gray-300 border-gray-500/50"
                 }
               >
-                {vehicle.available ? 'Available' : 'Unavailable'}
+                {vehicle.available ? 'Dostupné' : 'Nedostupné'}
               </Badge>
             </div>
 
@@ -62,13 +62,13 @@ export default function VehicleCardNew({ vehicle, onDelete }: VehicleCardProps) 
 
             {vehicle.images && vehicle.images.length > 0 && (
               <div className="mb-4">
-                <p className="text-gray-400 text-sm mb-2">Additional Images: {vehicle.images.length}</p>
+                <p className="text-gray-400 text-sm mb-2">Další obrázky: {vehicle.images.length}</p>
                 <div className="grid grid-cols-5 gap-2">
                   {vehicle.images.map((img, idx) => (
                     <img
                       key={idx}
                       src={img}
-                      alt={`${vehicle.tesla_model} image ${idx + 1}`}
+                      alt={`${vehicle.tesla_model} obrázek ${idx + 1}`}
                       className="w-full h-16 object-cover rounded"
                     />
                   ))}
@@ -79,7 +79,7 @@ export default function VehicleCardNew({ vehicle, onDelete }: VehicleCardProps) 
             <div className="flex gap-2 mt-4">
               <Link href={`/dashboard/vehicles/${vehicle.id}/edit`} className="flex-1">
                 <Button variant="default" className="w-full bg-blue-600 hover:bg-blue-700">
-                  Edit
+                  Upravit
                 </Button>
               </Link>
               <Button
@@ -87,17 +87,17 @@ export default function VehicleCardNew({ vehicle, onDelete }: VehicleCardProps) 
                 onClick={() => setShowDeleteConfirm(true)}
                 className="flex-1 bg-red-600/20 hover:bg-red-600/30 text-red-300 border border-red-500/50"
               >
-                Delete
+                Smazat
               </Button>
             </div>
           </>
         ) : (
           <div className="space-y-4">
             <div>
-              <h3 className="text-xl font-bold text-white mb-2">Confirm Delete</h3>
+              <h3 className="text-xl font-bold text-white mb-2">Potvrdit smazání</h3>
               <p className="text-gray-300">
-                Are you sure you want to delete this {vehicle.tesla_model} {vehicle.tesla_variant}?
-                This action cannot be undone.
+                Opravdu chcete smazat tuto {vehicle.tesla_model} {vehicle.tesla_variant}?
+                Tuto akci nelze vrátit zpět.
               </p>
             </div>
             <div className="flex gap-3">
@@ -107,7 +107,7 @@ export default function VehicleCardNew({ vehicle, onDelete }: VehicleCardProps) 
                 disabled={isDeleting}
                 className="flex-1 border-white/20 text-white hover:bg-white/10"
               >
-                Cancel
+                Zrušit
               </Button>
               <Button
                 variant="destructive"
@@ -115,7 +115,7 @@ export default function VehicleCardNew({ vehicle, onDelete }: VehicleCardProps) 
                 disabled={isDeleting}
                 className="flex-1 bg-red-600 hover:bg-red-700"
               >
-                {isDeleting ? 'Deleting...' : 'Delete'}
+                {isDeleting ? 'Mazání...' : 'Smazat'}
               </Button>
             </div>
           </div>

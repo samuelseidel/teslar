@@ -49,7 +49,7 @@ export default function VehiclesSectionNew({ ambassadorId }: VehiclesSectionProp
       await fetchVehicles()
     } catch (error) {
       console.error('Error deleting vehicle:', error)
-      alert('Failed to delete vehicle. Please try again.')
+      alert('Smazání vozidla selhalo. Zkuste to prosím znovu.')
     }
   }
 
@@ -58,14 +58,14 @@ export default function VehiclesSectionNew({ ambassadorId }: VehiclesSectionProp
       <CardHeader>
         <div className="flex justify-between items-center">
           <div>
-            <CardTitle className="text-2xl text-white">My Vehicles</CardTitle>
+            <CardTitle className="text-2xl text-white">Moje vozidla</CardTitle>
             <CardDescription className="text-gray-400">
-              Manage your Tesla vehicles for test drives
+              Spravujte svá Tesla vozidla pro testovací jízdy
             </CardDescription>
           </div>
           <Link href="/dashboard/vehicles/new">
             <Button className="bg-red-600 hover:bg-red-700 text-white">
-              + Add Vehicle
+              + Přidat vozidlo
             </Button>
           </Link>
         </div>
@@ -74,18 +74,18 @@ export default function VehiclesSectionNew({ ambassadorId }: VehiclesSectionProp
         {loading ? (
           <div className="text-center py-12">
             <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-500"></div>
-            <p className="text-gray-300 mt-4">Loading vehicles...</p>
+            <p className="text-gray-300 mt-4">Načítání vozidel...</p>
           </div>
         ) : vehicles.length === 0 ? (
           <div className="text-center py-12 bg-white/5 rounded-lg border border-white/10">
             <svg className="w-16 h-16 text-gray-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
             </svg>
-            <p className="text-gray-400 text-lg mb-2">No vehicles yet</p>
-            <p className="text-gray-500 mb-4">Add your first Tesla to start offering test drives</p>
+            <p className="text-gray-400 text-lg mb-2">Zatím žádná vozidla</p>
+            <p className="text-gray-500 mb-4">Přidejte svou první Teslu pro nabízení testovacích jízd</p>
             <Link href="/dashboard/vehicles/new">
               <Button className="bg-red-600 hover:bg-red-700 text-white">
-                Add Your First Vehicle
+                Přidat první vozidlo
               </Button>
             </Link>
           </div>

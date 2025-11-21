@@ -15,19 +15,19 @@ export default function Home() {
                 href="/vehicles"
                 className="text-gray-300 hover:text-white transition-colors"
               >
-                Browse Vehicles
+                Prohlédnout vozidla
               </Link>
               <Link
                 href="/auth/login"
                 className="text-gray-300 hover:text-white transition-colors"
               >
-                Login
+                Přihlásit se
               </Link>
               <Link
                 href="/auth/signup"
                 className="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 transition-colors font-medium"
               >
-                Become Ambassador
+                Stát se ambasadorem
               </Link>
             </div>
           </div>
@@ -39,25 +39,25 @@ export default function Home() {
         <div className="max-w-7xl mx-auto">
           <div className="text-center">
             <h1 className="text-5xl md:text-7xl font-bold text-white mb-6">
-              Experience Tesla
+              Vyzkoušejte Teslu
               <br />
-              <span className="text-red-500">Before You Buy</span>
+              <span className="text-red-500">Před Nákupem</span>
             </h1>
             <p className="text-xl md:text-2xl text-gray-300 mb-12 max-w-3xl mx-auto">
-              Connect with passionate Tesla owners in your area for a test drive and real-world insights
+              Spojte se s nadšenými majiteli Tesel ve vašem okolí pro testovací jízdu a zkušenosti z reálného provozu
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
                 href="/vehicles"
                 className="bg-red-600 text-white px-8 py-4 rounded-lg hover:bg-red-700 transition-colors font-medium text-lg"
               >
-                Browse Vehicles
+                Prohlédnout vozidla
               </Link>
               <Link
                 href="/auth/signup"
                 className="bg-white/10 backdrop-blur-sm text-white px-8 py-4 rounded-lg hover:bg-white/20 transition-colors font-medium text-lg border border-white/20"
               >
-                Share Your Tesla
+                Sdílejte svou Teslu
               </Link>
             </div>
           </div>
@@ -68,7 +68,7 @@ export default function Home() {
       <section className="py-20 px-4">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-4xl font-bold text-white text-center mb-16">
-            How It Works
+            Jak to funguje
           </h2>
           <div className="grid md:grid-cols-3 gap-8">
             {/* For Buyers */}
@@ -78,9 +78,9 @@ export default function Home() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
               </div>
-              <h3 className="text-2xl font-bold text-white mb-4">1. Find a Vehicle</h3>
+              <h3 className="text-2xl font-bold text-white mb-4">1. Najděte vozidlo</h3>
               <p className="text-gray-300">
-                Browse available Tesla vehicles in your area and find the perfect model for your test drive.
+                Prohlédněte si dostupná vozidla Tesla ve vašem okolí a najděte si perfektní model pro testovací jízdu.
               </p>
             </div>
 
@@ -91,9 +91,9 @@ export default function Home() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                 </svg>
               </div>
-              <h3 className="text-2xl font-bold text-white mb-4">2. Connect</h3>
+              <h3 className="text-2xl font-bold text-white mb-4">2. Spojte se</h3>
               <p className="text-gray-300">
-                Send them a message through our platform. They&apos;ll receive your contact details and get back to you.
+                Pošlete majiteli zprávu přes naši platformu. Obdrží vaše kontaktní údaje a ozve se vám.
               </p>
             </div>
 
@@ -104,9 +104,9 @@ export default function Home() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
               </div>
-              <h3 className="text-2xl font-bold text-white mb-4">3. Experience Tesla</h3>
+              <h3 className="text-2xl font-bold text-white mb-4">3. Vyzkoušejte Teslu</h3>
               <p className="text-gray-300">
-                Get a personalized test drive and learn everything about owning a Tesla from a real owner.
+                Získejte personalizovanou testovací jízdu a dozvíte se vše o vlastnění Tesly od skutečného majitele.
               </p>
             </div>
           </div>
@@ -120,15 +120,15 @@ export default function Home() {
             {/* For Potential Buyers */}
             <div>
               <h2 className="text-3xl font-bold text-white mb-6">
-                For Potential Buyers
+                Pro potenciální kupce
               </h2>
               <ul className="space-y-4">
                 {[
-                  'Real-world experience before making a decision',
-                  'Learn from actual Tesla owners',
-                  'Test drive in your local area',
-                  'Ask questions about ownership costs, charging, and more',
-                  'No pressure, just genuine advice',
+                  'Reálná zkušenost před rozhodnutím',
+                  'Učte se od skutečných majitelů Tesel',
+                  'Testovací jízda ve vašem okolí',
+                  'Ptejte se na náklady na vlastnictví, nabíjení a další',
+                  'Žádný nátlak, pouze upřímné rady',
                 ].map((item, index) => (
                   <li key={index} className="flex items-start">
                     <svg className="w-6 h-6 text-red-500 mr-3 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -143,15 +143,15 @@ export default function Home() {
             {/* For Tesla Owners */}
             <div>
               <h2 className="text-3xl font-bold text-white mb-6">
-                For Tesla Owners
+                Pro majitele Tesel
               </h2>
               <ul className="space-y-4">
                 {[
-                  'Share your passion for Tesla',
-                  'Help others make informed decisions',
-                  'Be part of the EV revolution',
-                  'Connect with your local community',
-                  'Flexible - meet people on your schedule',
+                  'Sdílejte svou vášeň pro Teslu',
+                  'Pomozte ostatním učinit informovaná rozhodnutí',
+                  'Buďte součástí elektromobilní revoluce',
+                  'Spojte se s vaší místní komunitou',
+                  'Flexibilně - setkejte se s lidmi podle vašeho rozvrhu',
                 ].map((item, index) => (
                   <li key={index} className="flex items-start">
                     <svg className="w-6 h-6 text-red-500 mr-3 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -170,23 +170,23 @@ export default function Home() {
       <section className="py-20 px-4">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-            Ready to Get Started?
+            Jste připraveni začít?
           </h2>
           <p className="text-xl text-gray-300 mb-8">
-            Join our community of Tesla enthusiasts today
+            Připojte se dnes k naší komunitě Tesla nadšenců
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/vehicles"
               className="bg-red-600 text-white px-8 py-4 rounded-lg hover:bg-red-700 transition-colors font-medium text-lg"
             >
-              Browse Vehicles
+              Prohlédnout vozidla
             </Link>
             <Link
               href="/auth/signup"
               className="bg-white text-gray-900 px-8 py-4 rounded-lg hover:bg-gray-100 transition-colors font-medium text-lg"
             >
-              Become an Ambassador
+              Stát se ambasadorem
             </Link>
           </div>
         </div>
@@ -195,8 +195,8 @@ export default function Home() {
       {/* Footer */}
       <footer className="border-t border-white/10 py-8 px-4">
         <div className="max-w-7xl mx-auto text-center text-gray-400">
-          <p>&copy; 2024 TeslaConnect. Connecting Tesla owners with potential buyers.</p>
-          <p className="mt-2 text-sm">Not officially affiliated with Tesla, Inc.</p>
+          <p>&copy; 2024 TeslaConnect. Spojujeme majitele Tesel s potenciálními kupci.</p>
+          <p className="mt-2 text-sm">Oficiálně nepatří společnosti Tesla, Inc.</p>
         </div>
       </footer>
     </div>

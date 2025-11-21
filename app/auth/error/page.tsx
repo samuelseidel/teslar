@@ -6,7 +6,7 @@ import { Suspense } from 'react'
 
 function ErrorContent() {
   const searchParams = useSearchParams()
-  const message = searchParams.get('message') || 'An authentication error occurred.'
+  const message = searchParams.get('message') || 'Došlo k chybě autentizace.'
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-black px-4">
@@ -26,26 +26,26 @@ function ErrorContent() {
             />
           </svg>
         </div>
-        <h2 className="text-2xl font-bold text-white mb-4">Authentication Error</h2>
+        <h2 className="text-2xl font-bold text-white mb-4">Chyba autentizace</h2>
         <p className="text-gray-300 mb-6">{message}</p>
         <div className="flex flex-col gap-3">
           <Link
             href="/auth/signup"
             className="w-full py-3 px-4 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium"
           >
-            Try Signing Up Again
+            Zkusit registraci znovu
           </Link>
           <Link
             href="/auth/login"
             className="w-full py-3 px-4 bg-white/10 text-white rounded-lg hover:bg-white/20 transition-colors font-medium border border-white/20"
           >
-            Back to Login
+            Zpět na přihlášení
           </Link>
           <Link
             href="/"
             className="text-sm text-gray-400 hover:text-white transition-colors"
           >
-            Return to Home
+            Vrátit se domů
           </Link>
         </div>
       </div>
@@ -57,7 +57,7 @@ export default function AuthErrorPage() {
   return (
     <Suspense fallback={
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-black">
-        <div className="text-white">Loading...</div>
+        <div className="text-white">Načítání...</div>
       </div>
     }>
       <ErrorContent />

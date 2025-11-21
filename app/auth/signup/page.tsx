@@ -22,14 +22,14 @@ export default function SignupPage() {
 
     // Validate passwords match
     if (password !== confirmPassword) {
-      setError('Passwords do not match')
+      setError('Hesla se neshodují')
       setLoading(false)
       return
     }
 
     // Validate password length
     if (password.length < 6) {
-      setError('Password must be at least 6 characters')
+      setError('Heslo musí mít alespoň 6 znaků')
       setLoading(false)
       return
     }
@@ -61,10 +61,10 @@ export default function SignupPage() {
         setNeedsEmailConfirmation(true)
         // Don't redirect - show message to check email
       } else {
-        setError('An unexpected error occurred during signup')
+        setError('Došlo k neočekávané chybě při registraci')
       }
     } catch (err) {
-      setError('An unexpected error occurred')
+      setError('Došlo k neočekávané chybě')
     } finally {
       setLoading(false)
     }
@@ -75,12 +75,12 @@ export default function SignupPage() {
       <div className="max-w-md w-full space-y-8 bg-white/10 backdrop-blur-lg rounded-2xl p-8 shadow-2xl border border-white/20">
         <div>
           <h2 className="text-center text-3xl font-bold text-white">
-            Become an Ambassador
+            Staňte se ambasadorem
           </h2>
           <p className="mt-2 text-center text-sm text-gray-300">
-            Already have an account?{' '}
+            Již máte účet?{' '}
             <Link href="/auth/login" className="font-medium text-red-500 hover:text-red-400">
-              Sign in here
+              Přihlaste se zde
             </Link>
           </p>
         </div>
@@ -95,18 +95,18 @@ export default function SignupPage() {
               {needsEmailConfirmation ? (
                 <div>
                   <p className="text-sm text-green-300 font-semibold mb-2">
-                    Account created successfully!
+                    Účet byl úspěšně vytvořen!
                   </p>
                   <p className="text-sm text-green-300">
-                    Please check your email ({email}) and click the confirmation link to activate your account.
+                    Zkontrolujte prosím váš e-mail ({email}) a klikněte na potvrzovací odkaz pro aktivaci vašeho účtu.
                   </p>
                   <p className="text-xs text-green-400 mt-2">
-                    After confirming, you can log in and create your ambassador profile.
+                    Po potvrzení se můžete přihlásit a vytvořit váš ambasadorský profil.
                   </p>
                 </div>
               ) : (
                 <p className="text-sm text-green-300">
-                  Account created successfully! Redirecting to profile creation...
+                  Účet byl úspěšně vytvořen! Přesměrování na vytvoření profilu...
                 </p>
               )}
             </div>
@@ -114,7 +114,7 @@ export default function SignupPage() {
           <div className="space-y-4">
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-200">
-                Email address
+                E-mailová adresa
               </label>
               <input
                 id="email"
@@ -125,12 +125,12 @@ export default function SignupPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="mt-1 block w-full px-4 py-3 bg-white/5 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                placeholder="Enter your email"
+                placeholder="Zadejte váš e-mail"
               />
             </div>
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-200">
-                Password
+                Heslo
               </label>
               <input
                 id="password"
@@ -141,12 +141,12 @@ export default function SignupPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="mt-1 block w-full px-4 py-3 bg-white/5 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                placeholder="Create a password (min 6 characters)"
+                placeholder="Vytvořte heslo (min. 6 znaků)"
               />
             </div>
             <div>
               <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-200">
-                Confirm Password
+                Potvrďte heslo
               </label>
               <input
                 id="confirmPassword"
@@ -157,7 +157,7 @@ export default function SignupPage() {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 className="mt-1 block w-full px-4 py-3 bg-white/5 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                placeholder="Confirm your password"
+                placeholder="Potvrďte vaše heslo"
               />
             </div>
           </div>
@@ -168,13 +168,13 @@ export default function SignupPage() {
               disabled={loading}
               className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
-              {loading ? 'Creating account...' : 'Create account'}
+              {loading ? 'Vytváření účtu...' : 'Vytvořit účet'}
             </button>
           </div>
 
           <div className="text-center">
             <Link href="/" className="text-sm text-gray-300 hover:text-white">
-              Back to home
+              Zpět na hlavní stránku
             </Link>
           </div>
         </form>

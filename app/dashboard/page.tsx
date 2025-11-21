@@ -48,7 +48,7 @@ export default async function DashboardPage() {
             </Link>
             <div className="flex items-center gap-4">
               <Link href="/dashboard/profile" className="text-gray-300 hover:text-white transition-colors">
-                Profile Settings
+                Nastavení profilu
               </Link>
               <span className="text-gray-300">{user.email}</span>
               <form action="/auth/logout" method="POST">
@@ -56,7 +56,7 @@ export default async function DashboardPage() {
                   type="submit"
                   className="text-gray-300 hover:text-white transition-colors"
                 >
-                  Logout
+                  Odhlásit se
                 </button>
               </form>
             </div>
@@ -70,14 +70,14 @@ export default async function DashboardPage() {
           {/* Header with background gradient */}
           <div className="bg-gradient-to-r from-red-600/20 to-red-800/20 px-8 pt-8 pb-20">
             <div className="flex justify-between items-start">
-              <h1 className="text-2xl font-bold text-white">Ambassador Profile</h1>
+              <h1 className="text-2xl font-bold text-white">Profil ambasadora</h1>
               <Link href="/dashboard/profile">
                 <Button
                   variant="outline"
                   className="bg-white/10 border-white/20 text-white hover:bg-white/20 hover:border-white/30"
                 >
                   <Edit className="w-4 h-4 mr-2" />
-                  Edit Profile
+                  Upravit profil
                 </Button>
               </Link>
             </div>
@@ -118,11 +118,11 @@ export default async function DashboardPage() {
                     <span className={`w-2 h-2 rounded-full ${
                       ambassador.available ? 'bg-green-400' : 'bg-gray-400'
                     }`}></span>
-                    {ambassador.available ? 'Available' : 'Unavailable'}
+                    {ambassador.available ? 'Dostupný' : 'Nedostupný'}
                   </span>
                   {ambassador.referral_code && (
                     <span className="px-4 py-1.5 rounded-full text-sm font-medium bg-red-500/20 text-red-300 border border-red-500/50">
-                      Referral: {ambassador.referral_code}
+                      Doporučení: {ambassador.referral_code}
                     </span>
                   )}
                 </div>
@@ -135,21 +135,21 @@ export default async function DashboardPage() {
               <div className="bg-white/5 rounded-xl p-6 border border-white/10">
                 <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
                   <Mail className="w-5 h-5 text-red-400" />
-                  Contact Information
+                  Kontaktní informace
                 </h3>
                 <div className="space-y-4">
                   <div className="flex items-start gap-3">
                     <Mail className="w-5 h-5 text-gray-400 mt-0.5 flex-shrink-0" />
                     <div>
-                      <p className="text-xs text-gray-400 uppercase tracking-wide mb-1">Email</p>
+                      <p className="text-xs text-gray-400 uppercase tracking-wide mb-1">E-mail</p>
                       <p className="text-white">{ambassador.email}</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
                     <Phone className="w-5 h-5 text-gray-400 mt-0.5 flex-shrink-0" />
                     <div>
-                      <p className="text-xs text-gray-400 uppercase tracking-wide mb-1">Phone</p>
-                      <p className="text-white">{ambassador.phone || 'Not provided'}</p>
+                      <p className="text-xs text-gray-400 uppercase tracking-wide mb-1">Telefon</p>
+                      <p className="text-white">{ambassador.phone || 'Neuvedeno'}</p>
                     </div>
                   </div>
                 </div>
@@ -159,13 +159,13 @@ export default async function DashboardPage() {
               <div className="bg-white/5 rounded-xl p-6 border border-white/10">
                 <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
                   <MapPin className="w-5 h-5 text-red-400" />
-                  Location
+                  Lokace
                 </h3>
                 <div className="space-y-4">
                   <div className="flex items-start gap-3">
                     <MapPin className="w-5 h-5 text-gray-400 mt-0.5 flex-shrink-0" />
                     <div>
-                      <p className="text-xs text-gray-400 uppercase tracking-wide mb-1">City & Region</p>
+                      <p className="text-xs text-gray-400 uppercase tracking-wide mb-1">Město a kraj</p>
                       <p className="text-white">{ambassador.city}, {ambassador.region}</p>
                     </div>
                   </div>
@@ -174,7 +174,7 @@ export default async function DashboardPage() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9" />
                     </svg>
                     <div>
-                      <p className="text-xs text-gray-400 uppercase tracking-wide mb-1">Country</p>
+                      <p className="text-xs text-gray-400 uppercase tracking-wide mb-1">Země</p>
                       <p className="text-white">{ambassador.country_code?.toUpperCase() || 'CZ'}</p>
                     </div>
                   </div>
@@ -186,7 +186,7 @@ export default async function DashboardPage() {
                 <div className="md:col-span-2 bg-white/5 rounded-xl p-6 border border-white/10">
                   <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
                     <FileText className="w-5 h-5 text-red-400" />
-                    About Me
+                    O mně
                   </h3>
                   <p className="text-gray-300 leading-relaxed">{ambassador.bio}</p>
                 </div>
@@ -200,15 +200,15 @@ export default async function DashboardPage() {
 
         {/* Contact Requests Section */}
         <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 shadow-2xl border border-white/20 mt-8">
-          <h2 className="text-2xl font-bold text-white mb-6">Contact Requests</h2>
+          <h2 className="text-2xl font-bold text-white mb-6">Kontaktní žádosti</h2>
 
           {!contactRequests || contactRequests.length === 0 ? (
             <div className="text-center py-12">
               <svg className="w-16 h-16 text-gray-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
               </svg>
-              <p className="text-gray-400 text-lg">No contact requests yet</p>
-              <p className="text-gray-500 mt-2">When potential buyers reach out, their requests will appear here</p>
+              <p className="text-gray-400 text-lg">Zatím žádné kontaktní žádosti</p>
+              <p className="text-gray-500 mt-2">Když se potenciální kupci ozvou, jejich žádosti se zde objeví</p>
             </div>
           ) : (
             <div className="space-y-4">
@@ -222,11 +222,11 @@ export default async function DashboardPage() {
                       <h3 className="text-xl font-semibold text-white">{request.buyer_name}</h3>
                       {(request as any).vehicle && (
                         <p className="text-red-400 text-sm font-medium">
-                          Interested in: {(request as any).vehicle.tesla_model} {(request as any).vehicle.tesla_variant} ({(request as any).vehicle.tesla_year})
+                          Zájem o: {(request as any).vehicle.tesla_model} {(request as any).vehicle.tesla_variant} ({(request as any).vehicle.tesla_year})
                         </p>
                       )}
                       <p className="text-gray-400 text-sm">
-                        {new Date(request.created_at).toLocaleDateString('en-US', {
+                        {new Date(request.created_at).toLocaleDateString('cs-CZ', {
                           year: 'numeric',
                           month: 'long',
                           day: 'numeric',
@@ -238,14 +238,14 @@ export default async function DashboardPage() {
                   </div>
                   <div className="space-y-2 mb-4">
                     <div>
-                      <span className="text-gray-400 text-sm">Email: </span>
+                      <span className="text-gray-400 text-sm">E-mail: </span>
                       <a href={`mailto:${request.buyer_email}`} className="text-red-400 hover:text-red-300">
                         {request.buyer_email}
                       </a>
                     </div>
                     {request.buyer_phone && (
                       <div>
-                        <span className="text-gray-400 text-sm">Phone: </span>
+                        <span className="text-gray-400 text-sm">Telefon: </span>
                         <a href={`tel:${request.buyer_phone}`} className="text-red-400 hover:text-red-300">
                           {request.buyer_phone}
                         </a>

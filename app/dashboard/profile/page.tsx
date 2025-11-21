@@ -131,11 +131,11 @@ export default function ProfileSettingsPage() {
 
       if (error) throw error
 
-      alert('Profile updated successfully!')
+      alert('Profil byl úspěšně aktualizován!')
       router.push('/dashboard')
     } catch (error) {
       console.error('Error updating profile:', error)
-      alert('Failed to update profile. Please try again.')
+      alert('Aktualizace profilu selhala. Zkuste to prosím znovu.')
     } finally {
       setIsSubmitting(false)
     }
@@ -146,7 +146,7 @@ export default function ProfileSettingsPage() {
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black flex items-center justify-center">
         <div className="text-center">
           <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-500"></div>
-          <p className="text-gray-300 mt-4">Loading profile...</p>
+          <p className="text-gray-300 mt-4">Načítání profilu...</p>
         </div>
       </div>
     )
@@ -165,7 +165,7 @@ export default function ProfileSettingsPage() {
             </Link>
             <Link href="/dashboard">
               <Button variant="ghost" className="text-gray-300">
-                ← Back to Dashboard
+                ← Zpět na nástěnku
               </Button>
             </Link>
           </div>
@@ -175,9 +175,9 @@ export default function ProfileSettingsPage() {
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <Card className="bg-gray-900/50 border-white/20">
           <CardHeader>
-            <CardTitle className="text-3xl text-white">Profile Settings</CardTitle>
+            <CardTitle className="text-3xl text-white">Nastavení profilu</CardTitle>
             <CardDescription className="text-gray-400">
-              Update your ambassador profile information
+              Aktualizujte informace vašeho ambasadorského profilu
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -185,12 +185,12 @@ export default function ProfileSettingsPage() {
               {/* Profile Picture */}
               <div className="space-y-2">
                 <Label className="text-gray-200">
-                  Profile Picture
+                  Profilový obrázek
                 </Label>
                 <ImageUpload
                   value={ambassador.profile_image_url}
                   onChange={(file) => setProfileImageFile(file)}
-                  label="Upload profile picture"
+                  label="Nahrát profilový obrázek"
                   aspectRatio="square"
                   maxSizeMB={5}
                 />
@@ -199,7 +199,7 @@ export default function ProfileSettingsPage() {
               {/* Full Name */}
               <div className="space-y-2">
                 <Label htmlFor="full_name" className="text-gray-200">
-                  Full Name *
+                  Celé jméno *
                 </Label>
                 <Input
                   id="full_name"
@@ -214,7 +214,7 @@ export default function ProfileSettingsPage() {
               {/* Phone */}
               <div className="space-y-2">
                 <Label htmlFor="phone" className="text-gray-200">
-                  Phone
+                  Telefon
                 </Label>
                 <Input
                   id="phone"
@@ -228,14 +228,14 @@ export default function ProfileSettingsPage() {
               {/* Bio */}
               <div className="space-y-2">
                 <Label htmlFor="bio" className="text-gray-200">
-                  Bio
+                  O mně
                 </Label>
                 <Textarea
                   id="bio"
                   rows={4}
                   value={formData.bio}
                   onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
-                  placeholder="Tell potential buyers about your Tesla experience..."
+                  placeholder="Řekněte potenciálním kupcům o vaší zkušenosti s Teslou..."
                   className="bg-white/5 border-white/20 text-white placeholder-gray-500"
                 />
               </div>
@@ -243,14 +243,14 @@ export default function ProfileSettingsPage() {
               {/* Tesla Referral Code */}
               <div className="space-y-2">
                 <Label htmlFor="referral_code" className="text-gray-200">
-                  Tesla Referral Code
+                  Tesla doporučovací kód
                 </Label>
                 <Input
                   id="referral_code"
                   type="text"
                   value={formData.referral_code}
                   onChange={(e) => setFormData({ ...formData, referral_code: e.target.value })}
-                  placeholder="Your Tesla referral code"
+                  placeholder="Váš Tesla doporučovací kód"
                   className="bg-white/5 border-white/20 text-white placeholder-gray-500"
                 />
               </div>
@@ -258,7 +258,7 @@ export default function ProfileSettingsPage() {
               {/* Location Info */}
               <div className="space-y-4 p-4 bg-white/5 rounded-lg border border-white/10">
                 <div className="flex justify-between items-center">
-                  <p className="text-gray-200 font-medium">Location</p>
+                  <p className="text-gray-200 font-medium">Lokace</p>
                   {!showAddressInput && (
                     <Button
                       type="button"
@@ -267,7 +267,7 @@ export default function ProfileSettingsPage() {
                       onClick={() => setShowAddressInput(true)}
                       className="border-white/20 text-white hover:bg-white/10"
                     >
-                      Change Address
+                      Změnit adresu
                     </Button>
                   )}
                 </div>
@@ -277,7 +277,7 @@ export default function ProfileSettingsPage() {
                     <AddressAutocomplete
                       onAddressSelect={handleAddressSelect}
                       defaultValue={`${formData.city}, ${formData.region}, ${formData.country}`}
-                      placeholder="Start typing your new address..."
+                      placeholder="Začněte psát vaši novou adresu..."
                       restrictToCountries={['cz', 'sk', 'at', 'de', 'pl']}
                     />
                     <Button
@@ -287,25 +287,25 @@ export default function ProfileSettingsPage() {
                       onClick={() => setShowAddressInput(false)}
                       className="text-gray-400 hover:text-white hover:bg-white/10"
                     >
-                      Cancel
+                      Zrušit
                     </Button>
                   </div>
                 ) : (
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <p className="text-xs text-gray-500">City</p>
+                      <p className="text-xs text-gray-500">Město</p>
                       <p className="text-white">{formData.city}</p>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-500">Region</p>
+                      <p className="text-xs text-gray-500">Kraj</p>
                       <p className="text-white">{formData.region}</p>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-500">Country</p>
+                      <p className="text-xs text-gray-500">Země</p>
                       <p className="text-white">{formData.country}</p>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-500">Email (read-only)</p>
+                      <p className="text-xs text-gray-500">E-mail (pouze pro čtení)</p>
                       <p className="text-white">{ambassador.email}</p>
                     </div>
                   </div>
@@ -321,14 +321,14 @@ export default function ProfileSettingsPage() {
                   disabled={isSubmitting}
                   className="flex-1 border-white/20 text-white hover:bg-white/10"
                 >
-                  Cancel
+                  Zrušit
                 </Button>
                 <Button
                   type="submit"
                   disabled={isSubmitting}
                   className="flex-1 bg-red-600 hover:bg-red-700 text-white"
                 >
-                  {isSubmitting ? 'Saving...' : 'Save Changes'}
+                  {isSubmitting ? 'Ukládání...' : 'Uložit změny'}
                 </Button>
               </div>
             </form>
