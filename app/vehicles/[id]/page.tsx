@@ -243,17 +243,30 @@ export default function VehicleDetailPage() {
                         </div>
                       )}
 
-                      {/* Registration Date in Czech Republic */}
-                      {vehicle.vehicle_registry_data.DatumPrvniRegistraceVCr && (
+                      {/* Operating Weight */}
+                      {vehicle.vehicle_registry_data.HmotnostiProvozni && (
+                        <div className="bg-white/5 rounded-lg p-4 border border-white/10">
+                          <div className="flex items-center gap-2 mb-2">
+                            <svg className="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />
+                            </svg>
+                            <p className="text-gray-400 text-sm font-medium">Operating Weight</p>
+                          </div>
+                          <p className="text-white text-lg font-semibold">{vehicle.vehicle_registry_data.HmotnostiProvozni} kg</p>
+                        </div>
+                      )}
+
+                      {/* First Registration Date */}
+                      {vehicle.vehicle_registry_data.DatumPrvniRegistrace && (
                         <div className="bg-white/5 rounded-lg p-4 border border-white/10">
                           <div className="flex items-center gap-2 mb-2">
                             <svg className="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                             </svg>
-                            <p className="text-gray-400 text-sm font-medium">First Registration (CZ)</p>
+                            <p className="text-gray-400 text-sm font-medium">First Registration</p>
                           </div>
                           <p className="text-white text-lg font-semibold">
-                            {new Date(vehicle.vehicle_registry_data.DatumPrvniRegistraceVCr).toLocaleDateString('cs-CZ')}
+                            {new Date(vehicle.vehicle_registry_data.DatumPrvniRegistrace).toLocaleDateString('cs-CZ')}
                           </p>
                         </div>
                       )}
