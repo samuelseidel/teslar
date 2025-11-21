@@ -30,6 +30,9 @@ export interface Ambassador {
   bio: string | null
   profile_image_url: string | null
   referral_code: string | null // Tesla referral code
+  instagram_url: string | null // Instagram profile URL
+  facebook_url: string | null // Facebook profile URL
+  x_url: string | null // X (Twitter) profile URL
   available: boolean
   created_at: string
   updated_at: string
