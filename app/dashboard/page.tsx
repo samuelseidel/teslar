@@ -44,6 +44,9 @@ export default async function DashboardPage() {
               Tesla<span className="text-red-500">Connect</span>
             </Link>
             <div className="flex items-center gap-4">
+              <Link href="/dashboard/profile" className="text-gray-300 hover:text-white transition-colors">
+                Profile Settings
+              </Link>
               <span className="text-gray-300">{user.email}</span>
               <form action="/auth/logout" method="POST">
                 <button

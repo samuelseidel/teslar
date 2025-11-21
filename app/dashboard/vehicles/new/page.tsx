@@ -18,11 +18,16 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea'
 import { Badge } from '@/components/ui/badge'
 import Link from 'next/link'
+import ImageUpload from '@/components/ImageUpload'
+import MultiImageUpload from '@/components/MultiImageUpload'
+import { uploadVehicleProfileImage, uploadVehicleImages } from '@/lib/supabase/storage'
 
 export default function NewVehiclePage() {
   const router = useRouter()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [ambassadorId, setAmbassadorId] = useState<string | null>(null)
+  const [profileImageFile, setProfileImageFile] = useState<File | null>(null)
+  const [additionalImageFiles, setAdditionalImageFiles] = useState<File[]>([])
   const [formData, setFormData] = useState<VehicleFormData>({
     tesla_model: '',
     tesla_variant: '',
@@ -103,12 +108,51 @@ export default function NewVehiclePage() {
     setIsSubmitting(true)
     try {
       const supabase = createClient()
-      const { error } = await supabase.from('vehicles').insert({
-        ambassador_id: ambassadorId,
-        ...formData,
-      })
 
-      if (error) throw error
+      // First, create the vehicle record to get the ID
+      const { data: vehicle, error: insertError } = await supabase
+        .from('vehicles')
+        .insert({
+          ambassador_id: ambassadorId,
+          ...formData,
+        })
+        .select()
+        .single()
+
+      if (insertError) throw insertError
+
+      // Upload images if provided
+      let profileImageUrl: string | null = null
+      let additionalImageUrls: string[] = []
+
+      if (profileImageFile && vehicle) {
+        profileImageUrl = await uploadVehicleProfileImage(
+          ambassadorId,
+          vehicle.id,
+          profileImageFile
+        )
+      }
+
+      if (additionalImageFiles.length > 0 && vehicle) {
+        additionalImageUrls = await uploadVehicleImages(
+          ambassadorId,
+          vehicle.id,
+          additionalImageFiles
+        )
+      }
+
+      // Update vehicle with image URLs
+      if (profileImageUrl || additionalImageUrls.length > 0) {
+        const { error: updateError } = await supabase
+          .from('vehicles')
+          .update({
+            profile_image_url: profileImageUrl,
+            images: additionalImageUrls.length > 0 ? additionalImageUrls : null,
+          })
+          .eq('id', vehicle.id)
+
+        if (updateError) throw updateError
+      }
 
       router.push('/dashboard')
     } catch (error) {
@@ -241,6 +285,33 @@ export default function NewVehiclePage() {
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   placeholder="e.g., Red with white interior, FSD, 19-inch wheels..."
                   className="bg-white/5 border-white/20 text-white placeholder-gray-500"
+                />
+              </div>
+
+              {/* Profile Image */}
+              <div className="space-y-2">
+                <Label className="text-gray-200">
+                  Profile Image (Main listing photo)
+                </Label>
+                <ImageUpload
+                  value={null}
+                  onChange={(file) => setProfileImageFile(file)}
+                  label="Upload vehicle profile image"
+                  aspectRatio="video"
+                  maxSizeMB={5}
+                />
+              </div>
+
+              {/* Additional Images */}
+              <div className="space-y-2">
+                <Label className="text-gray-200">
+                  Additional Images (Up to 5)
+                </Label>
+                <MultiImageUpload
+                  value={[]}
+                  onChange={(files) => setAdditionalImageFiles(files)}
+                  maxImages={5}
+                  maxSizeMB={5}
                 />
               </div>
 
