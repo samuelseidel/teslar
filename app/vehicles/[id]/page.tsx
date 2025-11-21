@@ -187,28 +187,11 @@ export default function VehicleDetailPage() {
             {/* Vehicle Details */}
             <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 shadow-2xl border border-white/20">
               <h1 className="text-4xl font-bold text-white mb-2">
-                {vehicle.tesla_model}
+                Tesla {vehicle.tesla_model} {vehicle.tesla_year}
               </h1>
               {vehicle.tesla_variant && (
-                <p className="text-2xl text-red-400 font-medium mb-4">{vehicle.tesla_variant}</p>
+                <p className="text-2xl text-red-400 font-medium mb-6">{vehicle.tesla_variant}</p>
               )}
-
-              <div className="grid grid-cols-2 gap-4 mb-6">
-                <div>
-                  <p className="text-gray-400 text-sm">Year</p>
-                  <p className="text-white text-lg font-medium">{vehicle.tesla_year}</p>
-                </div>
-                <div>
-                  <p className="text-gray-400 text-sm">Availability</p>
-                  <span className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${
-                    vehicle.available
-                      ? 'bg-green-500/20 text-green-300 border border-green-500/50'
-                      : 'bg-gray-500/20 text-gray-300 border border-gray-500/50'
-                  }`}>
-                    {vehicle.available ? 'Available' : 'Unavailable'}
-                  </span>
-                </div>
-              </div>
 
               {vehicle.description && (
                 <div>
