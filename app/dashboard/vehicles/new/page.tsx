@@ -201,6 +201,18 @@ export default function NewVehiclePage() {
     e.preventDefault()
     if (!ambassadorId) return
 
+    // Validate that VIN is provided
+    if (!formData.vin || formData.vin.trim().length !== 17) {
+      alert('VIN kód je povinný. Zadejte prosím VIN kód vozidla (17 znaků).')
+      return
+    }
+
+    // Validate that VIN is valid Tesla VIN
+    if (!isValidTeslaVin(formData.vin)) {
+      alert('Zadaný VIN kód není platný VIN kód vozidla Tesla.')
+      return
+    }
+
     setIsSubmitting(true)
     try {
       const supabase = createClient()
@@ -302,11 +314,11 @@ export default function NewVehiclePage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                   <Label className="text-blue-300 font-semibold">
-                    Automaticky vyplnit údaje podle VIN
+                    VIN kód vozidla *
                   </Label>
                 </div>
                 <p className="text-sm text-blue-200/70">
-                  Zadejte VIN kód vašeho vozidla a automaticky načteme údaje z registru vozidel
+                  Zadejte VIN kód vašeho vozidla (povinné pole). Automaticky načteme údaje z registru vozidel.
                 </p>
                 <div className="flex gap-2">
                   <Input
@@ -319,8 +331,9 @@ export default function NewVehiclePage() {
                       setVinLookupError(null)
                       setVinLookupSuccess(false)
                     }}
-                    placeholder="Zadejte VIN (17 znaků)"
+                    placeholder="Zadejte VIN (17 znaků) *"
                     maxLength={17}
+                    required
                     className="flex-1 bg-white/10 border-blue-400/30 text-white placeholder-gray-400 focus:ring-blue-500 font-mono"
                   />
                   <Button
@@ -362,7 +375,7 @@ export default function NewVehiclePage() {
 
               <div className="border-t border-white/10 pt-6">
                 <p className="text-sm text-gray-400 mb-4">
-                  Nebo vyplňte údaje ručně:
+                  Doplňující informace o vozidle:
                 </p>
               </div>
 
@@ -509,12 +522,19 @@ export default function NewVehiclePage() {
                 </Button>
                 <Button
                   type="submit"
-                  disabled={isSubmitting}
-                  className="flex-1 bg-red-600 hover:bg-red-700 text-white"
+                  disabled={isSubmitting || !formData.vin || formData.vin.length !== 17}
+                  className="flex-1 bg-red-600 hover:bg-red-700 text-white disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isSubmitting ? 'Adding...' : 'Add Vehicle'}
                 </Button>
               </div>
+
+              {/* VIN requirement notice */}
+              {(!formData.vin || formData.vin.length !== 17) && (
+                <p className="text-yellow-400 text-sm text-center mt-2">
+                  Před přidáním vozidla je nutné zadat platný VIN kód (17 znaků)
+                </p>
+              )}
             </form>
           </CardContent>
         </Card>
