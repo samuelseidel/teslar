@@ -43,6 +43,8 @@ CREATE TABLE vehicles (
   tesla_variant TEXT, -- e.g., 'Long Range AWD', 'P100D', 'Performance'
   tesla_year INTEGER NOT NULL,
   description TEXT, -- Specific details about this vehicle (color, features, etc.)
+  profile_image_url TEXT, -- Main profile image (square/round) for listings
+  images TEXT[], -- Array of additional image URLs (up to 5 total)
   available BOOLEAN DEFAULT true,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL

@@ -57,6 +57,8 @@ export interface Vehicle {
   tesla_variant: string | null // e.g., 'Long Range AWD', 'P100D', 'Performance'
   tesla_year: number
   description: string | null // Specific details about this vehicle (color, features, etc.)
+  profile_image_url: string | null // Main profile image (square/round) for listings
+  images: string[] | null // Array of additional image URLs (up to 5 total)
   available: boolean
   created_at: string
   updated_at: string

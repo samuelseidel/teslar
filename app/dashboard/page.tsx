@@ -88,11 +88,7 @@ export default async function DashboardPage() {
             </div>
             <div>
               <h3 className="text-sm font-medium text-gray-400 mb-1">Location</h3>
-              <p className="text-white text-lg">{ambassador.city}, {ambassador.state}</p>
-            </div>
-            <div>
-              <h3 className="text-sm font-medium text-gray-400 mb-1">Tesla Model</h3>
-              <p className="text-white text-lg">{ambassador.tesla_year} {ambassador.tesla_model}</p>
+              <p className="text-white text-lg">{ambassador.city}, {ambassador.region}</p>
             </div>
             {ambassador.bio && (
               <div className="md:col-span-2">

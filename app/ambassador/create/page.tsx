@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import Image from 'next/image'
 import { CZECH_REGIONS } from '@/lib/types/database.types'
 import {
   TESLA_MODEL_NAMES,
@@ -40,6 +41,12 @@ export default function CreateAmbassadorProfile() {
   const [availableVariants, setAvailableVariants] = useState<TeslaVariantInfo[]>([])
   const [yearRange, setYearRange] = useState({ min: 2008, max: new Date().getFullYear() + 1 })
 
+  // Image selection state
+  const [profileImage, setProfileImage] = useState<File | null>(null)
+  const [profileImagePreview, setProfileImagePreview] = useState<string | null>(null)
+  const [vehicleImages, setVehicleImages] = useState<File[]>([])
+  const [vehicleImagePreviews, setVehicleImagePreviews] = useState<string[]>([])
+
   // Update year range when model changes
   useEffect(() => {
     if (vehicleData.tesla_model) {
@@ -71,6 +78,108 @@ export default function CreateAmbassadorProfile() {
       }
     }
   }, [vehicleData.tesla_model, vehicleData.tesla_year])
+
+  // Handle profile image selection
+  const handleProfileImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    // Validate file type and size
+    const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']
+    const maxSize = 5 * 1024 * 1024 // 5MB
+
+    if (!validTypes.includes(file.type)) {
+      setError('Povolené formáty profilové fotografie: JPG, PNG, WEBP')
+      return
+    }
+
+    if (file.size > maxSize) {
+      setError('Maximální velikost souboru: 5MB')
+      return
+    }
+
+    setProfileImage(file)
+    setProfileImagePreview(URL.createObjectURL(file))
+    setError(null)
+  }
+
+  // Handle vehicle images selection
+  const handleVehicleImagesSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || [])
+    if (files.length === 0) return
+
+    // Check total number of images
+    if (vehicleImages.length + files.length > 5) {
+      setError('Můžete nahrát maximálně 5 fotografií vozidla')
+      return
+    }
+
+    // Validate each file
+    const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']
+    const maxSize = 5 * 1024 * 1024 // 5MB
+
+    for (const file of files) {
+      if (!validTypes.includes(file.type)) {
+        setError('Povolené formáty: JPG, PNG, WEBP')
+        return
+      }
+      if (file.size > maxSize) {
+        setError('Maximální velikost souboru: 5MB')
+        return
+      }
+    }
+
+    const newImages = [...vehicleImages, ...files].slice(0, 5)
+    const newPreviews = [
+      ...vehicleImagePreviews,
+      ...files.map(f => URL.createObjectURL(f))
+    ].slice(0, 5)
+
+    setVehicleImages(newImages)
+    setVehicleImagePreviews(newPreviews)
+    setError(null)
+  }
+
+  // Remove vehicle image
+  const removeVehicleImage = (index: number) => {
+    setVehicleImages(vehicleImages.filter((_, i) => i !== index))
+    setVehicleImagePreviews(vehicleImagePreviews.filter((_, i) => i !== index))
+  }
+
+  // Upload image to Supabase Storage
+  const uploadImage = async (
+    file: File,
+    ambassadorId: string,
+    vehicleId: string,
+    fileName: string
+  ): Promise<string | null> => {
+    try {
+      const supabase = createClient()
+      const fileExt = file.name.split('.').pop()
+      const filePath = `${ambassadorId}/${vehicleId}/${fileName}.${fileExt}`
+
+      const { data, error: uploadError } = await supabase.storage
+        .from('vehicle-images')
+        .upload(filePath, file, {
+          cacheControl: '3600',
+          upsert: true,
+        })
+
+      if (uploadError) {
+        console.error('Upload error:', uploadError)
+        return null
+      }
+
+      const {
+        data: { publicUrl },
+      } = supabase.storage.from('vehicle-images').getPublicUrl(data.path)
+
+      return publicUrl
+    } catch (err) {
+      console.error('Failed to upload image:', err)
+      return null
+    }
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -107,17 +216,53 @@ export default function CreateAmbassadorProfile() {
       }
 
       // Create first vehicle
-      const { error: vehicleError } = await supabase
+      const { data: vehicle, error: vehicleError } = await supabase
         .from('vehicles')
         .insert({
           ambassador_id: ambassador.id,
           ...vehicleData
         })
+        .select()
+        .single()
 
-      if (vehicleError) {
-        setError(vehicleError.message)
+      if (vehicleError || !vehicle) {
+        setError(vehicleError?.message || 'Nepodařilo se vytvořit vozidlo')
         setLoading(false)
         return
+      }
+
+      // Upload images if selected
+      let profileImageUrl: string | null = null
+      const vehicleImageUrls: string[] = []
+
+      // Upload profile image
+      if (profileImage) {
+        profileImageUrl = await uploadImage(profileImage, ambassador.id, vehicle.id, 'profile')
+      }
+
+      // Upload vehicle images
+      if (vehicleImages.length > 0) {
+        for (let i = 0; i < vehicleImages.length; i++) {
+          const url = await uploadImage(vehicleImages[i], ambassador.id, vehicle.id, `image-${i + 1}`)
+          if (url) vehicleImageUrls.push(url)
+        }
+      }
+
+      // Update vehicle with image URLs if any were uploaded
+      if (profileImageUrl || vehicleImageUrls.length > 0) {
+        const updateData: { profile_image_url?: string; images?: string[] } = {}
+        if (profileImageUrl) updateData.profile_image_url = profileImageUrl
+        if (vehicleImageUrls.length > 0) updateData.images = vehicleImageUrls
+
+        const { error: updateError } = await supabase
+          .from('vehicles')
+          .update(updateData)
+          .eq('id', vehicle.id)
+
+        if (updateError) {
+          console.error('Error updating vehicle with images:', updateError)
+          // Don't fail the whole process if image update fails
+        }
       }
 
       router.push('/dashboard')
@@ -370,6 +515,63 @@ export default function CreateAmbassadorProfile() {
                     Uveďte barvu, výbavu, dojezd, nebo jiné specifikace
                   </p>
                 </div>
+
+                {/* Vehicle Images */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-200 mb-2">
+                    Fotografie vozidla (volitelné, max 5)
+                  </label>
+
+                  {/* Upload Area */}
+                  {vehicleImages.length < 5 && (
+                    <div className="relative border-2 border-dashed border-white/20 rounded-lg p-6 text-center hover:border-white/40 transition-colors mb-4">
+                      <input
+                        type="file"
+                        id="vehicle-images"
+                        accept="image/jpeg,image/jpg,image/png,image/webp"
+                        multiple
+                        onChange={handleVehicleImagesSelect}
+                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                      />
+                      <div className="space-y-2">
+                        <svg className="mx-auto h-10 w-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                        <p className="text-sm text-gray-300">Klikněte nebo přetáhněte fotografie vozidla</p>
+                        <p className="text-xs text-gray-400">
+                          PNG, JPG, WEBP až do 5MB (zbývá {5 - vehicleImages.length} {5 - vehicleImages.length === 1 ? 'fotografie' : 'fotografií'})
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Image Previews */}
+                  {vehicleImagePreviews.length > 0 && (
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                      {vehicleImagePreviews.map((preview, index) => (
+                        <div key={index} className="relative aspect-square group">
+                          <div className="relative w-full h-full rounded-lg overflow-hidden border border-white/20">
+                            <Image
+                              src={preview}
+                              alt={`Fotografie vozidla ${index + 1}`}
+                              fill
+                              className="object-cover"
+                            />
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => removeVehicleImage(index)}
+                            className="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white rounded-full p-1.5 opacity-0 group-hover:opacity-100 transition-opacity"
+                          >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
 
@@ -386,6 +588,57 @@ export default function CreateAmbassadorProfile() {
                 className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500"
                 placeholder="Řekněte potenciálním kupcům o své zkušenosti s Teslou. Co na ní milujete? Jak dlouho ji vlastníte? Proč ji doporučujete?"
               />
+            </div>
+
+            {/* Profile Image */}
+            <div>
+              <h2 className="text-xl font-semibold text-white mb-4">Profilová fotografie (volitelné)</h2>
+              <div className="space-y-4">
+                {!profileImagePreview ? (
+                  <div className="relative border-2 border-dashed border-white/20 rounded-lg p-8 text-center hover:border-white/40 transition-colors">
+                    <input
+                      type="file"
+                      id="profile-image"
+                      accept="image/jpeg,image/jpg,image/png,image/webp"
+                      onChange={handleProfileImageSelect}
+                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                    />
+                    <div className="space-y-2">
+                      <div className="mx-auto w-16 h-16 rounded-full bg-white/5 flex items-center justify-center">
+                        <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                      </div>
+                      <p className="text-sm text-gray-300">Klikněte pro nahrání profilové fotografie</p>
+                      <p className="text-xs text-gray-400">PNG, JPG, WEBP až do 5MB</p>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-4">
+                    <div className="relative w-24 h-24 rounded-full overflow-hidden border-2 border-white/20">
+                      <Image
+                        src={profileImagePreview}
+                        alt="Náhled profilové fotografie"
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm text-gray-300 mb-2">Profilová fotografie vybrána</p>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setProfileImage(null)
+                          setProfileImagePreview(null)
+                        }}
+                        className="text-sm text-red-400 hover:text-red-300 transition-colors"
+                      >
+                        Odstranit
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Submit */}

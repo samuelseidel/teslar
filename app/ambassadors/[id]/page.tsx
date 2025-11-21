@@ -135,7 +135,7 @@ export default function AmbassadorProfilePage() {
             <div className="flex items-start justify-between mb-6">
               <div>
                 <h1 className="text-3xl font-bold text-white mb-2">{ambassador.full_name}</h1>
-                <p className="text-gray-300 text-lg">{ambassador.city}, {ambassador.state}</p>
+                <p className="text-gray-300 text-lg">{ambassador.city}, {ambassador.region}</p>
               </div>
               <span className="px-3 py-1 bg-green-500/20 text-green-300 rounded-full text-sm font-medium border border-green-500/50">
                 Available
@@ -146,20 +146,6 @@ export default function AmbassadorProfilePage() {
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-red-500/20 rounded-full flex items-center justify-center">
                   <svg className="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                  </svg>
-                </div>
-                <div>
-                  <p className="text-gray-400 text-sm">Tesla Model</p>
-                  <p className="text-white font-semibold text-lg">
-                    {ambassador.tesla_year} {ambassador.tesla_model}
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-red-500/20 rounded-full flex items-center justify-center">
-                  <svg className="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                   </svg>
@@ -167,7 +153,7 @@ export default function AmbassadorProfilePage() {
                 <div>
                   <p className="text-gray-400 text-sm">Location</p>
                   <p className="text-white font-semibold">
-                    {ambassador.city}, {ambassador.state}
+                    {ambassador.city}, {ambassador.region}
                   </p>
                 </div>
               </div>

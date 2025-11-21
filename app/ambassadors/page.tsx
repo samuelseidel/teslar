@@ -65,12 +65,13 @@ export default function AmbassadorsPage() {
     }
 
     if (filterState) {
-      filtered = filtered.filter(amb => amb.state === filterState)
+      filtered = filtered.filter(amb => amb.region === filterState)
     }
 
-    if (filterModel) {
-      filtered = filtered.filter(amb => amb.tesla_model === filterModel)
-    }
+    // TODO: Update this to filter by vehicles table
+    // if (filterModel) {
+    //   filtered = filtered.filter(amb => amb.tesla_model === filterModel)
+    // }
 
     setFilteredAmbassadors(filtered)
   }
@@ -210,22 +211,11 @@ export default function AmbassadorsPage() {
                 <div className="flex items-start justify-between mb-4">
                   <div>
                     <h3 className="text-xl font-bold text-white mb-1">{ambassador.full_name}</h3>
-                    <p className="text-gray-400">{ambassador.city}, {ambassador.state}</p>
+                    <p className="text-gray-400">{ambassador.city}, {ambassador.region}</p>
                   </div>
                   <span className="px-3 py-1 bg-red-500/20 text-red-300 rounded-full text-xs font-medium border border-red-500/50">
                     Available
                   </span>
-                </div>
-
-                <div className="mb-4">
-                  <div className="flex items-center gap-2 mb-2">
-                    <svg className="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                    </svg>
-                    <span className="text-white font-medium">
-                      {ambassador.tesla_year} {ambassador.tesla_model}
-                    </span>
-                  </div>
                 </div>
 
                 {ambassador.bio && (
