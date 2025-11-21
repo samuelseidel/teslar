@@ -7,6 +7,7 @@ import Link from 'next/link'
 import { TESLA_MODEL_NAMES } from '@/lib/constants/tesla-variants'
 import LocationSearch, { type LocationResult } from '@/components/LocationSearch'
 import { sortByDistance, formatDistance } from '@/lib/utils/distance'
+import Navigation from '@/components/Navigation'
 
 type VehicleWithDistance = VehicleWithAmbassador & { distance?: number }
 
@@ -97,29 +98,9 @@ export default function VehiclesPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black">
-      {/* Navigation */}
-      <nav className="bg-black/50 backdrop-blur-lg border-b border-white/10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <Link href="/" className="text-2xl font-bold text-white">
-              Tesla<span className="text-red-500">Connect</span>
-            </Link>
-            <div className="flex items-center gap-4">
-              <Link href="/" className="text-gray-300 hover:text-white transition-colors">
-                Domů
-              </Link>
-              <Link
-                href="/auth/signup"
-                className="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 transition-colors font-medium"
-              >
-                Stát se ambasadorem
-              </Link>
-            </div>
-          </div>
-        </div>
-      </nav>
+      <Navigation />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-12">
         {/* Header */}
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
