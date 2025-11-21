@@ -6,6 +6,8 @@ import { VehicleWithAmbassador, ContactFormData } from '@/lib/types/database.typ
 import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
 import { getCountryFromVin } from '@/lib/utils/vin-utils'
+import ImageGallery from '@/components/ImageGallery'
+import VehicleLocationMap from '@/components/VehicleLocationMap'
 
 export default function VehicleDetailPage() {
   const params = useParams()
@@ -139,35 +141,12 @@ export default function VehicleDetailPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Vehicle Images */}
-            <div className="bg-white/10 backdrop-blur-lg rounded-2xl overflow-hidden shadow-2xl border border-white/20">
-              {vehicle.profile_image_url ? (
-                <img
-                  src={vehicle.profile_image_url}
-                  alt={`${vehicle.tesla_model} ${vehicle.tesla_variant}`}
-                  className="w-full h-96 object-cover"
-                />
-              ) : (
-                <div className="w-full h-96 bg-gradient-to-br from-red-900/20 to-gray-900/20 flex items-center justify-center">
-                  <svg className="w-32 h-32 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                  </svg>
-                </div>
-              )}
-
-              {vehicle.images && vehicle.images.length > 0 && (
-                <div className="grid grid-cols-5 gap-2 p-4">
-                  {vehicle.images.map((img, idx) => (
-                    <img
-                      key={idx}
-                      src={img}
-                      alt={`${vehicle.tesla_model} image ${idx + 1}`}
-                      className="w-full h-24 object-cover rounded-lg cursor-pointer hover:opacity-80 transition-opacity"
-                    />
-                  ))}
-                </div>
-              )}
-            </div>
+            {/* Vehicle Images - Enhanced Gallery */}
+            <ImageGallery
+              images={vehicle.images || []}
+              profileImage={vehicle.profile_image_url}
+              vehicleName={`${vehicle.tesla_model} ${vehicle.tesla_variant || ''} ${vehicle.tesla_year}`}
+            />
 
             {/* Vehicle Details */}
             <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 shadow-2xl border border-white/20">
@@ -404,6 +383,16 @@ export default function VehicleDetailPage() {
                 </button>
               )}
             </div>
+
+            {/* Location Map */}
+            <VehicleLocationMap
+              latitude={vehicle.ambassador.latitude}
+              longitude={vehicle.ambassador.longitude}
+              city={vehicle.ambassador.city}
+              region={vehicle.ambassador.region}
+              country={vehicle.ambassador.country}
+              vehicleName={`${vehicle.tesla_model} ${vehicle.tesla_variant || ''}`}
+            />
           </div>
         </div>
       </div>
