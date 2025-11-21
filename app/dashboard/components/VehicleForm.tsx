@@ -83,8 +83,10 @@ export default function VehicleForm({ vehicle, onSubmit, onCancel }: VehicleForm
 
   if (typeof document === 'undefined') return null
 
+  const portalRoot = document.getElementById('portal-root') || document.body
+
   return createPortal(
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-y-auto">
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[9999] p-4 overflow-y-auto" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}>
       <div className="bg-gray-900 border border-white/20 rounded-2xl p-6 max-w-2xl w-full my-8">
         <h2 className="text-2xl font-bold text-white mb-6">
           {vehicle ? 'Edit Vehicle' : 'Add New Vehicle'}
@@ -209,6 +211,6 @@ export default function VehicleForm({ vehicle, onSubmit, onCancel }: VehicleForm
         </form>
       </div>
     </div>,
-    document.body
+    portalRoot
   )
 }

@@ -21,6 +21,8 @@ export default function VehicleCard({ vehicle, onEdit, onDelete }: VehicleCardPr
     setShowDeleteConfirm(false)
   }
 
+  const portalRoot = typeof document !== 'undefined' ? (document.getElementById('portal-root') || document.body) : null
+
   return (
     <>
     <div className="bg-white/5 border border-white/10 rounded-lg p-6 hover:border-red-500/50 transition-colors">
@@ -86,8 +88,8 @@ export default function VehicleCard({ vehicle, onEdit, onDelete }: VehicleCardPr
       </div>
     </div>
 
-      {showDeleteConfirm && typeof document !== 'undefined' && createPortal(
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+      {showDeleteConfirm && portalRoot && createPortal(
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[9999]" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}>
           <div className="bg-gray-900 border border-white/20 rounded-2xl p-6 max-w-md mx-4">
             <h3 className="text-xl font-bold text-white mb-2">Confirm Delete</h3>
             <p className="text-gray-300 mb-6">
@@ -111,7 +113,7 @@ export default function VehicleCard({ vehicle, onEdit, onDelete }: VehicleCardPr
             </div>
           </div>
         </div>,
-        document.body
+        portalRoot
       )}
     </>
   )
