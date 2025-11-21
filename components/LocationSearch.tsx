@@ -182,7 +182,7 @@ function PlacesAutocompleteInput({
           onFocus={() => setIsOpen(true)}
           disabled={!ready || isGettingLocation}
           placeholder={placeholder}
-          className="pl-10 pr-20 bg-white/5 border-white/20 text-white placeholder-gray-400 focus:ring-red-500 transition-all"
+          className="h-[50px] pl-10 pr-20 bg-white/5 border-white/20 text-white placeholder-gray-400 focus:ring-red-500 transition-all"
         />
 
         {/* Clear Button - shows when there's a value */}

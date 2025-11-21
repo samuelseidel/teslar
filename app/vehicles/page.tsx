@@ -142,14 +142,6 @@ export default function VehiclesPage() {
                 placeholder="Zadejte vaši adresu..."
                 className="w-full"
               />
-              {userLocation && (
-                <p className="text-xs text-green-400 mt-2 flex items-center gap-1 animate-in fade-in duration-200">
-                  <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
-                  </svg>
-                  {userLocation.formattedAddress}
-                </p>
-              )}
             </div>
 
             <div>
@@ -161,7 +153,7 @@ export default function VehiclesPage() {
                   id="model"
                   value={filterModel}
                   onChange={(e) => setFilterModel(e.target.value)}
-                  className="w-full px-4 py-3 pr-10 bg-white/5 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500 transition-all appearance-none cursor-pointer"
+                  className="w-full h-[50px] px-4 pr-10 bg-white/5 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500 transition-all appearance-none cursor-pointer"
                 >
                   <option value="">Všechny modely</option>
                   {TESLA_MODEL_NAMES.map((model) => (
@@ -198,11 +190,6 @@ export default function VehiclesPage() {
 
           <div className="mt-4 text-gray-300">
             Zobrazeno {filteredVehicles.length} z {vehicles.length} vozidel
-            {userLocation && filteredVehicles.length > 0 && (
-              <span className="text-blue-400 ml-2">
-                • Seřazeno podle vzdálenosti
-              </span>
-            )}
           </div>
         </div>
 
