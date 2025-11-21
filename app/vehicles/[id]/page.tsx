@@ -75,6 +75,8 @@ export default function VehicleDetailPage() {
 
     try {
       const supabase = createClient()
+
+      // Save contact request to database
       const { error } = await supabase.from('contact_requests').insert({
         vehicle_id: vehicleId,
         ambassador_id: vehicle?.ambassador_id,
@@ -82,6 +84,39 @@ export default function VehicleDetailPage() {
       })
 
       if (error) throw error
+
+      // Send email notification to ambassador
+      if (vehicle) {
+        try {
+          const vehicleName = `${vehicle.tesla_year} ${vehicle.tesla_model}${vehicle.tesla_variant ? ' ' + vehicle.tesla_variant : ''}`
+          const vehicleUrl = `${window.location.origin}/vehicles/${vehicleId}`
+
+          const emailResponse = await fetch('/api/send-contact-email', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              ambassadorEmail: vehicle.ambassador.email,
+              ambassadorName: formatAmbassadorName(vehicle.ambassador.first_name, vehicle.ambassador.last_name),
+              buyerName: formData.buyer_name,
+              buyerEmail: formData.buyer_email,
+              buyerPhone: formData.buyer_phone || undefined,
+              message: formData.message,
+              vehicleName,
+              vehicleUrl,
+            }),
+          })
+
+          if (!emailResponse.ok) {
+            console.error('Failed to send email notification:', await emailResponse.text())
+            // Don't fail the whole operation if email fails
+          }
+        } catch (emailError) {
+          console.error('Error sending email notification:', emailError)
+          // Don't fail the whole operation if email fails
+        }
+      }
 
       alert('Your message has been sent! The ambassador will contact you soon.')
       setShowContactForm(false)
