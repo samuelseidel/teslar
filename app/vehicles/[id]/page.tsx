@@ -118,7 +118,7 @@ export default function VehicleDetailPage() {
         }
       }
 
-      alert('Your message has been sent! The ambassador will contact you soon.')
+      alert('Vaše zpráva byla odeslána! Ambasador vás brzy kontaktuje.')
       setShowContactForm(false)
       setFormData({
         buyer_name: '',
@@ -128,7 +128,7 @@ export default function VehicleDetailPage() {
       })
     } catch (error) {
       console.error('Error sending contact request:', error)
-      alert('Failed to send message. Please try again.')
+      alert('Nepodařilo se odeslat zprávu. Zkuste to prosím znovu.')
     } finally {
       setIsSubmitting(false)
     }
@@ -139,7 +139,7 @@ export default function VehicleDetailPage() {
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black flex items-center justify-center">
         <div className="text-center">
           <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-500"></div>
-          <p className="text-gray-300 mt-4">Loading vehicle details...</p>
+          <p className="text-gray-300 mt-4">Načítání detailů vozidla...</p>
         </div>
       </div>
     )
@@ -160,13 +160,13 @@ export default function VehicleDetailPage() {
             </Link>
             <div className="flex items-center gap-4">
               <Link href="/vehicles" className="text-gray-300 hover:text-white transition-colors">
-                Back to Vehicles
+                Zpět na vozidla
               </Link>
               <Link
                 href="/auth/signup"
                 className="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 transition-colors font-medium"
               >
-                Become Ambassador
+                Stát se ambasadorem
               </Link>
             </div>
           </div>
@@ -200,30 +200,6 @@ export default function VehicleDetailPage() {
               )}
             </div>
 
-            {/* Meeting Options */}
-            {vehicle.meeting_options && vehicle.meeting_options.length > 0 && (
-              <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 shadow-2xl border border-white/20">
-                <div className="flex items-center gap-3 mb-6">
-                  <svg className="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                  </svg>
-                  <h3 className="text-2xl font-bold text-white">Co můžete zažít</h3>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {vehicle.meeting_options.map((option) => (
-                    <div key={option} className="bg-gradient-to-br from-red-500/10 to-red-600/5 border border-red-500/30 rounded-lg p-4 flex items-center gap-3">
-                      <div className="flex-shrink-0 w-10 h-10 bg-red-500/20 rounded-full flex items-center justify-center">
-                        <svg className="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                        </svg>
-                      </div>
-                      <span className="text-white font-medium">{MEETING_OPTIONS[option as MeetingOption]}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
             {/* Technical Specifications from Registry */}
             {(vehicle.vin || vehicle.vehicle_registry_data) && (
               <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 shadow-2xl border border-white/20">
@@ -231,7 +207,7 @@ export default function VehicleDetailPage() {
                   <svg className="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                   </svg>
-                  <h3 className="text-2xl font-bold text-white">Technical Specifications</h3>
+                  <h3 className="text-2xl font-bold text-white">Technické specifikace</h3>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -242,7 +218,7 @@ export default function VehicleDetailPage() {
                         <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
-                        <p className="text-gray-400 text-sm font-medium">Country of Manufacture</p>
+                        <p className="text-gray-400 text-sm font-medium">Země výroby</p>
                       </div>
                       <p className="text-white text-lg font-semibold">{getCountryFromVin(vehicle.vin)}</p>
                     </div>
@@ -258,7 +234,7 @@ export default function VehicleDetailPage() {
                             <svg className="w-5 h-5 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                             </svg>
-                            <p className="text-gray-400 text-sm font-medium">Power</p>
+                            <p className="text-gray-400 text-sm font-medium">Výkon</p>
                           </div>
                           <p className="text-white text-lg font-semibold">{parsePowerValue(vehicle.vehicle_registry_data.MotorMaxVykon)} kW</p>
                         </div>
@@ -271,7 +247,7 @@ export default function VehicleDetailPage() {
                             <svg className="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />
                             </svg>
-                            <p className="text-gray-400 text-sm font-medium">Operating Weight</p>
+                            <p className="text-gray-400 text-sm font-medium">Provozní hmotnost</p>
                           </div>
                           <p className="text-white text-lg font-semibold">{vehicle.vehicle_registry_data.HmotnostiProvozni} kg</p>
                         </div>
@@ -284,7 +260,7 @@ export default function VehicleDetailPage() {
                             <svg className="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                             </svg>
-                            <p className="text-gray-400 text-sm font-medium">First Registration</p>
+                            <p className="text-gray-400 text-sm font-medium">První registrace</p>
                           </div>
                           <p className="text-white text-lg font-semibold">
                             {new Date(vehicle.vehicle_registry_data.DatumPrvniRegistrace).toLocaleDateString('cs-CZ')}
@@ -303,8 +279,8 @@ export default function VehicleDetailPage() {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
                       <p>
-                        Technical specifications retrieved from the Czech Ministry of Transport Vehicle Registry (MDČ Portal).
-                        Data is stored at the time of vehicle registration on this platform.
+                        Technické specifikace získané z českého rejstříku vozidel Ministerstva dopravy (Portál MDČ).
+                        Data jsou uložena v okamžiku registrace vozidla na této platformě.
                       </p>
                     </div>
                   </div>
@@ -343,7 +319,7 @@ export default function VehicleDetailPage() {
                   <h4 className="text-lg font-semibold text-white mb-1">
                     {formatAmbassadorName(vehicle.ambassador.first_name, vehicle.ambassador.last_name)}
                   </h4>
-                  <p className="text-gray-400 text-sm">Tesla Ambassador</p>
+                  <p className="text-gray-400 text-sm">Tesla ambasador</p>
                 </div>
               </div>
 
@@ -357,7 +333,7 @@ export default function VehicleDetailPage() {
               {/* Social Media Links */}
               {(vehicle.ambassador.instagram_url || vehicle.ambassador.facebook_url || vehicle.ambassador.x_url) && (
                 <div className="mb-4">
-                  <p className="text-gray-400 text-xs font-medium mb-2 uppercase tracking-wider">Connect</p>
+                  <p className="text-gray-400 text-xs font-medium mb-2 uppercase tracking-wider">Připojit se</p>
                   <div className="flex gap-2">
                     {vehicle.ambassador.instagram_url && (
                       <a
@@ -413,7 +389,7 @@ export default function VehicleDetailPage() {
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
-                  Use Tesla Referral
+                  Použít Tesla doporučení
                 </a>
               )}
 
@@ -423,10 +399,29 @@ export default function VehicleDetailPage() {
                   onClick={() => setShowContactForm(true)}
                   className="w-full mt-3 px-6 py-3 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors font-medium border border-white/20"
                 >
-                  Contact Owner
+                  Kontaktovat majitele
                 </button>
               )}
             </div>
+
+            {/* Meeting Options */}
+            {vehicle.meeting_options && vehicle.meeting_options.length > 0 && (
+              <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 shadow-2xl border border-white/20">
+                <h3 className="text-lg font-bold text-white mb-4">Co můžete zažít</h3>
+                <div className="space-y-3">
+                  {vehicle.meeting_options.map((option) => (
+                    <div key={option} className="flex items-center gap-3 p-3 bg-gradient-to-r from-white/5 to-white/10 rounded-lg border border-white/20">
+                      <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
+                        <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                      </div>
+                      <span className="text-white font-medium text-sm">{MEETING_OPTIONS[option as MeetingOption]}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* Location Map */}
             <VehicleLocationMap
@@ -445,15 +440,15 @@ export default function VehicleDetailPage() {
       {showContactForm && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-gray-900 border border-white/20 rounded-2xl p-6 max-w-md w-full">
-            <h3 className="text-2xl font-bold text-white mb-4">Contact {vehicle.ambassador.full_name}</h3>
+            <h3 className="text-2xl font-bold text-white mb-4">Kontaktovat {formatAmbassadorName(vehicle.ambassador.first_name, vehicle.ambassador.last_name)}</h3>
             <p className="text-gray-300 mb-6">
-              Send a message to request a test drive of this {vehicle.tesla_model}
+              Pošlete zprávu a domluvte si testovací jízdu s tímto {vehicle.tesla_model}
             </p>
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label htmlFor="buyer_name" className="block text-sm font-medium text-gray-200 mb-2">
-                  Your Name *
+                  Vaše jméno *
                 </label>
                 <input
                   type="text"
@@ -467,7 +462,7 @@ export default function VehicleDetailPage() {
 
               <div>
                 <label htmlFor="buyer_email" className="block text-sm font-medium text-gray-200 mb-2">
-                  Your Email *
+                  Váš email *
                 </label>
                 <input
                   type="email"
@@ -481,7 +476,7 @@ export default function VehicleDetailPage() {
 
               <div>
                 <label htmlFor="buyer_phone" className="block text-sm font-medium text-gray-200 mb-2">
-                  Your Phone
+                  Váš telefon
                 </label>
                 <input
                   type="tel"
@@ -494,7 +489,7 @@ export default function VehicleDetailPage() {
 
               <div>
                 <label htmlFor="message" className="block text-sm font-medium text-gray-200 mb-2">
-                  Message *
+                  Zpráva *
                 </label>
                 <textarea
                   id="message"
@@ -502,7 +497,7 @@ export default function VehicleDetailPage() {
                   rows={4}
                   value={formData.message}
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                  placeholder="Let them know why you're interested and when you'd like to schedule a test drive..."
+                  placeholder="Napište, proč máte zájem a kdy byste chtěli domluvit testovací jízdu..."
                   className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500"
                 />
               </div>
@@ -514,14 +509,14 @@ export default function VehicleDetailPage() {
                   disabled={isSubmitting}
                   className="flex-1 px-4 py-3 bg-white/10 text-white rounded-lg hover:bg-white/20 transition-colors"
                 >
-                  Cancel
+                  Zrušit
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
                   className="flex-1 px-4 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 font-medium"
                 >
-                  {isSubmitting ? 'Sending...' : 'Send Message'}
+                  {isSubmitting ? 'Odesílání...' : 'Odeslat zprávu'}
                 </button>
               </div>
             </form>
