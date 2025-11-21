@@ -121,37 +121,48 @@ export default function NewVehiclePage() {
       const response = await fetch(`/api/vehicle-lookup?vin=${vinInput.trim()}`)
       const data = await response.json()
 
-      if (!response.ok) {
+      // Handle error responses
+      if (!response.ok || data.success === false) {
         setVinLookupError(data.error || 'Nepodařilo se načíst data vozidla')
         return
       }
 
-      if (data.success && data.data) {
-        const vehicleData = data.data
-
-        // Check if it's a Tesla
-        if (vehicleData.make !== 'TESLA') {
-          setVinLookupError('Pouze vozidla Tesla jsou podporována')
-          return
-        }
-
-        // Auto-populate form fields and store complete registry data
-        const year = vehicleData.year || new Date().getFullYear()
-        const model = vehicleData.model || ''
-
-        setFormData(prev => ({
-          ...prev,
-          vin: vinInput.trim(),
-          vehicle_registry_data: vehicleData.rawData, // Store complete API response
-          tesla_model: model,
-          tesla_year: year,
-          tesla_variant: vehicleData.variant || prev.tesla_variant,
-          description: prev.description || `${vehicleData.color || ''} ${model} ${year}`.trim(),
-        }))
-
-        setVinLookupSuccess(true)
-        setVinLookupError(null)
+      // Validate data structure
+      if (!data.success || !data.data) {
+        setVinLookupError('Neplatná odpověď ze serveru')
+        return
       }
+
+      const vehicleData = data.data
+
+      // Check if it's a Tesla
+      if (vehicleData.make !== 'TESLA') {
+        setVinLookupError('Pouze vozidla Tesla jsou podporována')
+        return
+      }
+
+      // Validate required fields
+      if (!vehicleData.model) {
+        setVinLookupError('Nepodařilo se načíst model vozidla')
+        return
+      }
+
+      // Auto-populate form fields and store complete registry data
+      const year = vehicleData.year || new Date().getFullYear()
+      const model = vehicleData.model || ''
+
+      setFormData(prev => ({
+        ...prev,
+        vin: vinInput.trim(),
+        vehicle_registry_data: vehicleData.rawData, // Store complete API response
+        tesla_model: model,
+        tesla_year: year,
+        tesla_variant: vehicleData.variant || prev.tesla_variant,
+        description: prev.description || `${vehicleData.color || ''} ${model} ${year}`.trim(),
+      }))
+
+      setVinLookupSuccess(true)
+      setVinLookupError(null)
     } catch (error) {
       console.error('VIN lookup error:', error)
       setVinLookupError('Chyba při komunikaci se serverem')

@@ -38,17 +38,26 @@ export async function GET(request: NextRequest) {
 
     const data = await response.json()
 
+    // Log the response for debugging
+    console.log('MDČ API Response:', { Status: data.Status, hasData: !!data.Data })
+
     // Check the status code from the API
     if (data.Status === 3) {
       return NextResponse.json(
-        { error: 'Vozidlo s tímto VIN nebylo nalezeno' },
+        {
+          success: false,
+          error: 'Vozidlo s tímto VIN nebylo nalezeno v českém registru vozidel'
+        },
         { status: 404 }
       )
     }
 
     if (data.Status !== 1 || !data.Data) {
       return NextResponse.json(
-        { error: 'Nepodařilo se získat data vozidla' },
+        {
+          success: false,
+          error: `Nepodařilo se získat data vozidla (Status: ${data.Status})`
+        },
         { status: 400 }
       )
     }
@@ -78,7 +87,10 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('Error fetching vehicle data:', error)
     return NextResponse.json(
-      { error: 'Interní chyba serveru' },
+      {
+        success: false,
+        error: 'Interní chyba serveru při komunikaci s registrem vozidel'
+      },
       { status: 500 }
     )
   }
