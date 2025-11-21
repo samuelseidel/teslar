@@ -276,8 +276,6 @@ export default function VehicleDetailPage() {
           <div className="lg:col-span-1 space-y-6">
             {/* Ambassador Card */}
             <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 shadow-2xl border border-white/20">
-              <h3 className="text-xl font-bold text-white mb-6">Vehicle Owner</h3>
-
               {/* Profile Section - Horizontal Layout */}
               <div className="flex gap-4 mb-6">
                 {/* Profile Picture */}
