@@ -198,8 +198,8 @@ export default function ProfileSettingsPage() {
                 <ImageUpload
                   value={ambassador.profile_image_url}
                   onChange={(file) => setProfileImageFile(file)}
-                  label="Nahrát profilový obrázek"
-                  aspectRatio="square"
+                  label="Profilový obrázek"
+                  variant="avatar"
                   maxSizeMB={5}
                 />
               </div>
