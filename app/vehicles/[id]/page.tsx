@@ -177,7 +177,6 @@ export default function VehicleDetailPage() {
 
               {vehicle.description && (
                 <div>
-                  <h3 className="text-xl font-bold text-white mb-3">Description</h3>
                   <p className="text-gray-300 leading-relaxed">{vehicle.description}</p>
                 </div>
               )}
