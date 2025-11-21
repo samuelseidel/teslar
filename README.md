@@ -5,15 +5,19 @@ A modern platform connecting Tesla owners (ambassadors) with potential buyers wh
 ## 🚀 Features
 
 ### For Potential Buyers
-- Browse Tesla owners in your area
-- Filter by location, state, and Tesla model
-- View ambassador profiles with detailed information
+- Browse Tesla vehicles in your area (Czech Republic)
+- Filter by location, region (kraje), and Tesla model
+- View vehicle details with photos and specifications
+- See Tesla referral codes from ambassadors
 - Contact ambassadors directly through the platform
 - No registration required to browse
 
 ### For Tesla Owners (Ambassadors)
 - Create and manage your ambassador profile
-- Showcase your Tesla and ownership experience
+- Add multiple Tesla vehicles to your profile
+- Upload vehicle photos (profile + up to 5 additional images)
+- Share your Tesla referral code
+- Interactive variant selection (year-aware)
 - Receive contact requests from interested buyers
 - View all contact requests in your dashboard
 - Simple email-based communication
@@ -25,7 +29,9 @@ A modern platform connecting Tesla owners (ambassadors) with potential buyers wh
 - **Styling**: Tailwind CSS
 - **Database**: Supabase (PostgreSQL)
 - **Authentication**: Supabase Auth
+- **Storage**: Supabase Storage (vehicle images)
 - **Deployment**: Vercel (recommended)
+- **Localization**: Czech (Czech regions, language)
 
 ## 📋 Prerequisites
 
@@ -49,12 +55,23 @@ npm install
 1. Go to [Supabase](https://supabase.com) and create a new project
 2. Wait for the project to be set up (this takes a few minutes)
 
-#### Run the Database Schema
+#### Run the Database Setup
 1. Go to your Supabase project dashboard
 2. Navigate to the SQL Editor
-3. Copy the contents of `supabase-schema.sql` from this repository
+3. Copy the contents of `supabase-setup.sql` from this repository
 4. Paste and run the SQL in the editor
 5. This will create all necessary tables, indexes, and security policies
+
+**📖 For existing installations**: See [`MIGRATION_GUIDE.md`](./MIGRATION_GUIDE.md) to migrate from the old schema
+
+#### Set Up Storage for Vehicle Images
+After running the migration, you need to set up Supabase Storage:
+
+1. Go to **Storage** in your Supabase Dashboard
+2. Create bucket: `vehicle-images`
+3. Set up RLS policies for file uploads
+
+**📖 See [`STORAGE_SETUP_GUIDE.md`](./STORAGE_SETUP_GUIDE.md) for complete step-by-step instructions**
 
 ### 3. Configure Environment Variables
 
@@ -149,21 +166,32 @@ teslar/
 │   │   ├── login/
 │   │   ├── signup/
 │   │   ├── callback/
+│   │   ├── confirm/         # Email confirmation handler
+│   │   ├── error/
 │   │   └── logout/
 │   ├── ambassador/          # Ambassador profile creation
-│   │   └── create/
+│   │   └── create/          # Multi-step form with image upload
 │   ├── dashboard/           # Ambassador dashboard
 │   ├── page.tsx            # Landing page
 │   ├── layout.tsx          # Root layout
 │   └── globals.css         # Global styles
+├── components/
+│   └── ImageUpload.tsx     # Reusable image upload component
 ├── lib/
 │   ├── supabase/           # Supabase client utilities
-│   │   ├── client.ts       # Browser client
-│   │   └── server.ts       # Server client
-│   └── types/              # TypeScript types
-│       └── database.types.ts
-├── middleware.ts           # Auth middleware
-├── supabase-schema.sql     # Database schema
+│   │   ├── client.ts       # Browser client (@supabase/ssr)
+│   │   ├── server.ts       # Server client (@supabase/ssr)
+│   │   └── middleware.ts   # Middleware client
+│   ├── types/              # TypeScript types
+│   │   └── database.types.ts  # Database & form types
+│   └── constants/
+│       └── tesla-variants.ts  # Tesla model variants with production years
+├── middleware.ts                      # Auth middleware
+├── supabase-migration-to-czech.sql   # Database migration script
+├── MIGRATION_GUIDE.md                # Database setup guide
+├── STORAGE_SETUP_GUIDE.md            # Storage bucket setup guide
+├── SUPABASE_SETUP.md                 # Supabase auth configuration
+├── claude.md                         # Development guidelines
 └── README.md
 ```
 
