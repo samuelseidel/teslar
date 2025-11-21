@@ -9,6 +9,7 @@ import {
   TeslaModelName,
   getVariantsForModelAndYear,
   getYearRangeForModel,
+  normalizeModelName,
 } from '@/lib/constants/tesla-variants'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -107,9 +108,33 @@ export default function NewVehiclePage() {
     }
   }
 
+  // Validate VIN format - Tesla VINs start with specific WMI codes
+  const isValidTeslaVin = (vin: string): boolean => {
+    // Tesla WMI codes (World Manufacturer Identifier - first 3 characters)
+    const teslaWmiCodes = [
+      '5YJ',  // USA - Tesla, Inc. - Model S, Model 3
+      '7SA',  // USA - Tesla, Inc. - Model X, Model Y
+      '7G2',  // USA - Tesla, Inc. - Cybertruck, Semi
+      'LRW',  // China - Tesla (Shanghai) Co. - Model 3, Model Y
+      'XP7',  // Germany - Tesla Germany GmbH - Model Y
+      'SFZ',  // UK - Tesla (Lotus) - Roadster (Gen 1)
+    ]
+
+    const wmi = vin.substring(0, 3)
+    return teslaWmiCodes.includes(wmi)
+  }
+
   const handleVinLookup = async () => {
-    if (!vinInput || vinInput.trim().length < 17) {
-      setVinLookupError('VIN musí mít 17 znaků')
+    const vin = vinInput.trim()
+
+    if (!vin || vin.length !== 17) {
+      setVinLookupError('VIN musí mít přesně 17 znaků')
+      return
+    }
+
+    // Validate VIN format
+    if (!isValidTeslaVin(vin)) {
+      setVinLookupError('Tento VIN kód nepatří vozidlu Tesla')
       return
     }
 
@@ -118,7 +143,7 @@ export default function NewVehiclePage() {
     setVinLookupSuccess(false)
 
     try {
-      const response = await fetch(`/api/vehicle-lookup?vin=${vinInput.trim()}`)
+      const response = await fetch(`/api/vehicle-lookup?vin=${vin}`)
       const data = await response.json()
 
       // Handle error responses
@@ -135,30 +160,31 @@ export default function NewVehiclePage() {
 
       const vehicleData = data.data
 
-      // Check if it's a Tesla
-      if (vehicleData.make !== 'TESLA') {
-        setVinLookupError('Pouze vozidla Tesla jsou podporována')
+      // Validate required fields
+      if (!vehicleData.model) {
+        setVinLookupError('Nepodařilo se načíst model vozidla z registru')
         return
       }
 
-      // Validate required fields
-      if (!vehicleData.model) {
-        setVinLookupError('Nepodařilo se načíst model vozidla')
+      // Normalize the model name from API (e.g., "MODEL 3" -> "Model 3")
+      const normalizedModel = normalizeModelName(vehicleData.model)
+
+      if (!normalizedModel) {
+        setVinLookupError(`Model "${vehicleData.model}" není v systému podporován`)
         return
       }
 
       // Auto-populate form fields and store complete registry data
       const year = vehicleData.year || new Date().getFullYear()
-      const model = vehicleData.model || ''
 
       setFormData(prev => ({
         ...prev,
-        vin: vinInput.trim(),
+        vin: vin,
         vehicle_registry_data: vehicleData.rawData, // Store complete API response
-        tesla_model: model,
+        tesla_model: normalizedModel,
         tesla_year: year,
         tesla_variant: vehicleData.variant || prev.tesla_variant,
-        description: prev.description || `${vehicleData.color || ''} ${model} ${year}`.trim(),
+        description: prev.description || `${vehicleData.color || ''} ${normalizedModel} ${year}`.trim(),
       }))
 
       setVinLookupSuccess(true)

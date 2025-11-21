@@ -30,8 +30,12 @@ export async function GET(request: NextRequest) {
     })
 
     if (!response.ok) {
+      console.error('MDČ API HTTP Error:', response.status, response.statusText)
       return NextResponse.json(
-        { error: 'Chyba při komunikaci s API MDČ' },
+        {
+          success: false,
+          error: 'Chyba při komunikaci s API MDČ'
+        },
         { status: response.status }
       )
     }

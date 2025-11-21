@@ -111,6 +111,24 @@ export function getYearRangeForModel(model: TeslaModelName): { min: number; max:
 // Flat list of all models for selection
 export const TESLA_MODEL_NAMES: readonly TeslaModelName[] = Object.keys(TESLA_VARIANTS) as TeslaModelName[]
 
+// Helper function to normalize API model names to our internal format
+// API returns "MODEL 3", "MODEL S", etc. (all caps)
+// We use "Model 3", "Model S", etc. (title case)
+export function normalizeModelName(apiModelName: string): TeslaModelName | null {
+  const normalized = apiModelName
+    .toLowerCase()
+    .split(' ')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ')
+
+  // Check if the normalized name is a valid TeslaModelName
+  if (TESLA_MODEL_NAMES.includes(normalized as TeslaModelName)) {
+    return normalized as TeslaModelName
+  }
+
+  return null
+}
+
 // Human-readable descriptions for variants (Czech)
 export const VARIANT_DESCRIPTIONS: Record<string, string> = {
   // Battery capacity based
