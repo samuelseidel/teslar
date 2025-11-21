@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { useLoadScript } from '@react-google-maps/api'
 import usePlacesAutocomplete, { getGeocode, getLatLng } from 'use-places-autocomplete'
 import { Input } from '@/components/ui/input'
@@ -23,22 +23,18 @@ interface LocationSearchProps {
   restrictToCountries?: string[]
 }
 
-export default function LocationSearch({
+// Inner component that uses Places API - only rendered when API is loaded
+function PlacesAutocompleteInput({
   onLocationSelect,
   placeholder = 'Hledat podle města nebo adresy...',
   className = '',
-  restrictToCountries = ['cz'], // Default to Czech Republic only
+  restrictToCountries = ['cz'],
 }: LocationSearchProps) {
   const inputRef = useRef<HTMLInputElement>(null)
   const [isOpen, setIsOpen] = useState(false)
   const [selectedLocation, setSelectedLocation] = useState<LocationResult | null>(null)
   const [isGettingLocation, setIsGettingLocation] = useState(false)
   const [locationError, setLocationError] = useState<string | null>(null)
-
-  const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '',
-    libraries,
-  })
 
   const {
     ready,
@@ -102,7 +98,7 @@ export default function LocationSearch({
 
   const handleUseMyLocation = () => {
     if (!navigator.geolocation) {
-      setLocationError('Geolocation is not supported by your browser')
+      setLocationError('Geolokace není podporována vaším prohlížečem')
       return
     }
 
@@ -144,7 +140,7 @@ export default function LocationSearch({
           }
         } catch (error) {
           console.error('Error reverse geocoding location:', error)
-          setLocationError('Could not determine your address')
+          setLocationError('Nepodařilo se určit vaši adresu')
         } finally {
           setIsGettingLocation(false)
         }
@@ -155,16 +151,16 @@ export default function LocationSearch({
 
         switch (error.code) {
           case error.PERMISSION_DENIED:
-            setLocationError('Location access denied. Please enable location permissions.')
+            setLocationError('Přístup k lokaci byl zamítnut. Povolte prosím oprávnění k lokaci.')
             break
           case error.POSITION_UNAVAILABLE:
-            setLocationError('Location information unavailable')
+            setLocationError('Informace o lokaci nejsou dostupné')
             break
           case error.TIMEOUT:
-            setLocationError('Location request timed out')
+            setLocationError('Žádost o lokaci vypršela')
             break
           default:
-            setLocationError('An error occurred while getting your location')
+            setLocationError('Při získávání vaší lokace došlo k chybě')
         }
       },
       {
@@ -173,26 +169,6 @@ export default function LocationSearch({
         maximumAge: 0,
       }
     )
-  }
-
-  if (loadError) {
-    return (
-      <div className="rounded-md bg-red-500/20 border border-red-500 p-4">
-        <p className="text-sm text-red-300">Error loading maps. Please refresh the page.</p>
-      </div>
-    )
-  }
-
-  if (!isLoaded) {
-    return (
-      <div className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-lg text-gray-400">
-        Loading...
-      </div>
-    )
-  }
-
-  if (!process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY) {
-    return null // Silently fail if no API key
   }
 
   return (
@@ -231,7 +207,7 @@ export default function LocationSearch({
           className="bg-white/5 border-white/20 text-white hover:bg-white/10 hover:border-white/30 flex-shrink-0"
         >
           <Locate className={`w-4 h-4 mr-2 ${isGettingLocation ? 'animate-pulse' : ''}`} />
-          {isGettingLocation ? 'Getting location...' : 'Use My Location'}
+          {isGettingLocation ? 'Načítání...' : 'Použít moji lokaci'}
         </Button>
       </div>
 
@@ -272,4 +248,38 @@ export default function LocationSearch({
       )}
     </div>
   )
+}
+
+// Outer component that loads Google Maps API
+export default function LocationSearch(props: LocationSearchProps) {
+  const { isLoaded, loadError } = useLoadScript({
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '',
+    libraries,
+  })
+
+  if (loadError) {
+    return (
+      <div className="rounded-md bg-red-500/20 border border-red-500 p-4">
+        <p className="text-sm text-red-300">Chyba při načítání map. Obnovte prosím stránku.</p>
+      </div>
+    )
+  }
+
+  if (!isLoaded) {
+    return (
+      <div className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-lg text-gray-400">
+        Načítání...
+      </div>
+    )
+  }
+
+  if (!process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY) {
+    return (
+      <div className="rounded-md bg-yellow-500/20 border border-yellow-500/50 p-4">
+        <p className="text-sm text-yellow-300">Google Maps API klíč není nakonfigurován</p>
+      </div>
+    )
+  }
+
+  return <PlacesAutocompleteInput {...props} />
 }
