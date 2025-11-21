@@ -12,6 +12,7 @@ export default function SignupPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
+  const [needsEmailConfirmation, setNeedsEmailConfirmation] = useState(false)
   const router = useRouter()
 
   const handleSignup = async (e: React.FormEvent) => {
@@ -35,23 +36,32 @@ export default function SignupPage() {
 
     try {
       const supabase = createClient()
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
-          emailRedirectTo: `${window.location.origin}/auth/callback`,
+          emailRedirectTo: `${window.location.origin}/auth/confirm`,
         },
       })
 
       if (error) {
         setError(error.message)
-      } else {
+      } else if (data.session) {
+        // Session exists - email confirmation is disabled
+        // User is automatically logged in
         setSuccess(true)
-        // Redirect to profile creation after a short delay
+        setNeedsEmailConfirmation(false)
         setTimeout(() => {
           router.push('/ambassador/create')
           router.refresh()
-        }, 2000)
+        }, 1500)
+      } else if (data.user) {
+        // User created but no session - email confirmation required
+        setSuccess(true)
+        setNeedsEmailConfirmation(true)
+        // Don't redirect - show message to check email
+      } else {
+        setError('An unexpected error occurred during signup')
       }
     } catch (err) {
       setError('An unexpected error occurred')
@@ -82,9 +92,23 @@ export default function SignupPage() {
           )}
           {success && (
             <div className="rounded-md bg-green-500/20 border border-green-500 p-4">
-              <p className="text-sm text-green-300">
-                Account created successfully! Redirecting to profile creation...
-              </p>
+              {needsEmailConfirmation ? (
+                <div>
+                  <p className="text-sm text-green-300 font-semibold mb-2">
+                    Account created successfully!
+                  </p>
+                  <p className="text-sm text-green-300">
+                    Please check your email ({email}) and click the confirmation link to activate your account.
+                  </p>
+                  <p className="text-xs text-green-400 mt-2">
+                    After confirming, you can log in and create your ambassador profile.
+                  </p>
+                </div>
+              ) : (
+                <p className="text-sm text-green-300">
+                  Account created successfully! Redirecting to profile creation...
+                </p>
+              )}
             </div>
           )}
           <div className="space-y-4">
