@@ -11,6 +11,7 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import Link from 'next/link'
 import ImageUpload from '@/components/ImageUpload'
+import AddressAutocomplete, { type AddressComponents } from '@/components/AddressAutocomplete'
 import { uploadAmbassadorProfileImage } from '@/lib/supabase/storage'
 
 export default function ProfileSettingsPage() {
@@ -19,11 +20,19 @@ export default function ProfileSettingsPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [ambassador, setAmbassador] = useState<Ambassador | null>(null)
   const [profileImageFile, setProfileImageFile] = useState<File | null>(null)
+  const [showAddressInput, setShowAddressInput] = useState(false)
   const [formData, setFormData] = useState({
     full_name: '',
     phone: '',
     bio: '',
     referral_code: '',
+    city: '',
+    region: '',
+    country: '',
+    country_code: '',
+    zip_code: '',
+    latitude: undefined as number | undefined,
+    longitude: undefined as number | undefined,
   })
 
   useEffect(() => {
@@ -58,6 +67,13 @@ export default function ProfileSettingsPage() {
         phone: ambassadorData.phone || '',
         bio: ambassadorData.bio || '',
         referral_code: ambassadorData.referral_code || '',
+        city: ambassadorData.city || '',
+        region: ambassadorData.region || '',
+        country: ambassadorData.country || '',
+        country_code: ambassadorData.country_code || '',
+        zip_code: ambassadorData.zip_code || '',
+        latitude: ambassadorData.latitude,
+        longitude: ambassadorData.longitude,
       })
     } catch (error) {
       console.error('Error fetching ambassador:', error)
@@ -65,6 +81,20 @@ export default function ProfileSettingsPage() {
     } finally {
       setLoading(false)
     }
+  }
+
+  const handleAddressSelect = (address: AddressComponents) => {
+    setFormData({
+      ...formData,
+      city: address.city,
+      region: address.region,
+      country: address.country,
+      country_code: address.countryCode,
+      zip_code: address.zipCode || '',
+      latitude: address.latitude,
+      longitude: address.longitude,
+    })
+    setShowAddressInput(false)
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -225,27 +255,61 @@ export default function ProfileSettingsPage() {
                 />
               </div>
 
-              {/* Location Info (Read-only) */}
+              {/* Location Info */}
               <div className="space-y-4 p-4 bg-white/5 rounded-lg border border-white/10">
-                <p className="text-gray-400 text-sm">Location (can't be changed here)</p>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-xs text-gray-500">Country</p>
-                    <p className="text-white">{ambassador.country}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-gray-500">Region</p>
-                    <p className="text-white">{ambassador.region}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-gray-500">City</p>
-                    <p className="text-white">{ambassador.city}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-gray-500">Email</p>
-                    <p className="text-white">{ambassador.email}</p>
-                  </div>
+                <div className="flex justify-between items-center">
+                  <p className="text-gray-200 font-medium">Location</p>
+                  {!showAddressInput && (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setShowAddressInput(true)}
+                      className="border-white/20 text-white hover:bg-white/10"
+                    >
+                      Change Address
+                    </Button>
+                  )}
                 </div>
+
+                {showAddressInput ? (
+                  <div className="space-y-3">
+                    <AddressAutocomplete
+                      onAddressSelect={handleAddressSelect}
+                      defaultValue={`${formData.city}, ${formData.region}, ${formData.country}`}
+                      placeholder="Start typing your new address..."
+                      restrictToCountries={['cz', 'sk', 'at', 'de', 'pl']}
+                    />
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setShowAddressInput(false)}
+                      className="text-gray-400 hover:text-white hover:bg-white/10"
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <p className="text-xs text-gray-500">City</p>
+                      <p className="text-white">{formData.city}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-500">Region</p>
+                      <p className="text-white">{formData.region}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-500">Country</p>
+                      <p className="text-white">{formData.country}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-500">Email (read-only)</p>
+                      <p className="text-white">{ambassador.email}</p>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Actions */}

@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
+import AddressAutocomplete, { type AddressComponents } from '@/components/AddressAutocomplete'
 import {
   getCountriesList,
   getRegionsForCountry,
@@ -37,7 +38,11 @@ export default function CreateAmbassadorProfile() {
     zip_code: '',
     bio: '',
     referral_code: '',
+    latitude: undefined as number | undefined,
+    longitude: undefined as number | undefined,
   })
+
+  const [addressSelected, setAddressSelected] = useState(false)
 
   const [vehicleData, setVehicleData] = useState({
     tesla_model: '',
@@ -46,7 +51,6 @@ export default function CreateAmbassadorProfile() {
     description: '',
   })
 
-  const [availableRegions, setAvailableRegions] = useState<string[]>(getRegionsForCountry(DEFAULT_COUNTRY))
   const [availableVariants, setAvailableVariants] = useState<TeslaVariantInfo[]>([])
   const [yearRange, setYearRange] = useState({ min: 2008, max: new Date().getFullYear() + 1 })
 
@@ -87,19 +91,6 @@ export default function CreateAmbassadorProfile() {
       }
     }
   }, [vehicleData.tesla_model, vehicleData.tesla_year])
-
-  // Update available regions when country changes
-  useEffect(() => {
-    if (formData.country_code) {
-      const regions = getRegionsForCountry(formData.country_code)
-      setAvailableRegions(regions)
-
-      // Reset region if it's not valid for the new country
-      if (formData.region && !regions.includes(formData.region)) {
-        setFormData(prev => ({ ...prev, region: '' }))
-      }
-    }
-  }, [formData.country_code])
 
   // Handle profile image selection
   const handleProfileImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -166,6 +157,22 @@ export default function CreateAmbassadorProfile() {
   const removeVehicleImage = (index: number) => {
     setVehicleImages(vehicleImages.filter((_, i) => i !== index))
     setVehicleImagePreviews(vehicleImagePreviews.filter((_, i) => i !== index))
+  }
+
+  // Handle address selection from autocomplete
+  const handleAddressSelect = (address: AddressComponents) => {
+    setFormData({
+      ...formData,
+      city: address.city,
+      region: address.region,
+      country: address.country,
+      country_code: address.countryCode,
+      zip_code: address.zipCode || '',
+      latitude: address.latitude,
+      longitude: address.longitude,
+    })
+    setAddressSelected(true)
+    setError(null)
   }
 
   // Upload image to Supabase Storage
@@ -350,86 +357,46 @@ export default function CreateAmbassadorProfile() {
             {/* Location */}
             <div>
               <h2 className="text-xl font-semibold text-white mb-4">Umístění</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label htmlFor="country" className="block text-sm font-medium text-gray-200 mb-1">
-                    Země *
-                  </label>
-                  <select
-                    id="country"
-                    required
-                    value={formData.country_code}
-                    onChange={(e) => {
-                      const country = getCountry(e.target.value)
-                      setFormData({
-                        ...formData,
-                        country_code: e.target.value,
-                        country: country?.name || e.target.value,
-                      })
-                    }}
-                    className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500"
-                  >
-                    <option value="" className="bg-gray-800">Vyberte zemi</option>
-                    {getCountriesList().map((country) => (
-                      <option key={country.code} value={country.code} className="bg-gray-800">
-                        {country.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
 
-                <div>
-                  <label htmlFor="region" className="block text-sm font-medium text-gray-200 mb-1">
-                    {formData.country_code ? `${getCountry(formData.country_code)?.regionType || 'Region'} *` : 'Region *'}
-                  </label>
-                  <select
-                    id="region"
-                    required
-                    value={formData.region}
-                    onChange={(e) => setFormData({ ...formData, region: e.target.value })}
-                    className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500"
-                    disabled={!formData.country_code}
-                  >
-                    <option value="" className="bg-gray-800">
-                      {formData.country_code ? 'Vyberte region' : 'Nejdříve vyberte zemi'}
-                    </option>
-                    {availableRegions.map((region) => (
-                      <option key={region} value={region} className="bg-gray-800">
-                        {region}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <label htmlFor="city" className="block text-sm font-medium text-gray-200 mb-1">
-                    Město *
-                  </label>
-                  <input
-                    type="text"
-                    id="city"
-                    required
-                    value={formData.city}
-                    onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                    className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500"
-                    placeholder="Praha"
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="zip_code" className="block text-sm font-medium text-gray-200 mb-1">
-                    PSČ / Zip Code
-                  </label>
-                  <input
-                    type="text"
-                    id="zip_code"
-                    value={formData.zip_code}
-                    onChange={(e) => setFormData({ ...formData, zip_code: e.target.value })}
-                    className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500"
-                    placeholder="110 00"
-                  />
-                </div>
+              {/* Address Autocomplete */}
+              <div className="mb-4">
+                <AddressAutocomplete
+                  onAddressSelect={handleAddressSelect}
+                  placeholder="Začněte psát vaši adresu nebo město..."
+                  label="Adresa"
+                  required
+                  restrictToCountries={['cz', 'sk', 'at', 'de', 'pl']}
+                />
+                <p className="text-xs text-gray-400 mt-2">
+                  Začněte psát a vyberte vaši adresu z návrhů. Automaticky vyplníme město, region a souřadnice.
+                </p>
               </div>
+
+              {/* Show selected address details */}
+              {addressSelected && (
+                <div className="bg-white/5 border border-white/20 rounded-lg p-4 space-y-2">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <p className="text-xs text-gray-400 uppercase tracking-wide mb-1">Město</p>
+                      <p className="text-white">{formData.city}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-400 uppercase tracking-wide mb-1">Region</p>
+                      <p className="text-white">{formData.region}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-400 uppercase tracking-wide mb-1">Země</p>
+                      <p className="text-white">{formData.country}</p>
+                    </div>
+                    {formData.zip_code && (
+                      <div>
+                        <p className="text-xs text-gray-400 uppercase tracking-wide mb-1">PSČ</p>
+                        <p className="text-white">{formData.zip_code}</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Tesla Referral Code */}
