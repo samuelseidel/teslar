@@ -39,9 +39,10 @@ CREATE TABLE ambassadors (
 CREATE TABLE vehicles (
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
   ambassador_id UUID REFERENCES ambassadors(id) ON DELETE CASCADE NOT NULL,
-  tesla_model TEXT NOT NULL,
+  tesla_model TEXT NOT NULL, -- e.g., 'Model S', 'Model 3'
+  tesla_variant TEXT, -- e.g., 'Long Range AWD', 'P100D', 'Performance'
   tesla_year INTEGER NOT NULL,
-  description TEXT, -- Specific details about this vehicle
+  description TEXT, -- Specific details about this vehicle (color, features, etc.)
   available BOOLEAN DEFAULT true,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL

@@ -53,9 +53,10 @@ export interface Ambassador {
 export interface Vehicle {
   id: string
   ambassador_id: string
-  tesla_model: string
+  tesla_model: string // e.g., 'Model S', 'Model 3'
+  tesla_variant: string | null // e.g., 'Long Range AWD', 'P100D', 'Performance'
   tesla_year: number
-  description: string | null // Specific details about this vehicle
+  description: string | null // Specific details about this vehicle (color, features, etc.)
   available: boolean
   created_at: string
   updated_at: string
@@ -99,6 +100,7 @@ export interface AmbassadorFormData {
 
 export interface VehicleFormData {
   tesla_model: string
+  tesla_variant?: string // Specific variant like 'Long Range AWD', 'P100D'
   tesla_year: number
   description?: string
   available?: boolean
