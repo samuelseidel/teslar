@@ -11,7 +11,8 @@ interface ImageGalleryProps {
 
 export default function ImageGallery({ images, profileImage, vehicleName }: ImageGalleryProps) {
   const [lightboxOpen, setLightboxOpen] = useState(false)
-  const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const [currentMainIndex, setCurrentMainIndex] = useState(0) // Current image shown in main view
+  const [lightboxIndex, setLightboxIndex] = useState(0) // Current image in lightbox
 
   // Combine profile image and additional images
   const allImages = [
@@ -19,8 +20,8 @@ export default function ImageGallery({ images, profileImage, vehicleName }: Imag
     ...(images || [])
   ]
 
-  const openLightbox = (index: number) => {
-    setCurrentImageIndex(index)
+  const openLightbox = () => {
+    setLightboxIndex(currentMainIndex)
     setLightboxOpen(true)
   }
 
@@ -29,18 +30,48 @@ export default function ImageGallery({ images, profileImage, vehicleName }: Imag
   }
 
   const goToPrevious = () => {
-    setCurrentImageIndex((prev) => (prev === 0 ? allImages.length - 1 : prev - 1))
+    setLightboxIndex((prev) => (prev === 0 ? allImages.length - 1 : prev - 1))
   }
 
   const goToNext = () => {
-    setCurrentImageIndex((prev) => (prev === allImages.length - 1 ? 0 : prev + 1))
+    setLightboxIndex((prev) => (prev === allImages.length - 1 ? 0 : prev + 1))
   }
 
-  // Keyboard navigation
+  const goToMainPrevious = () => {
+    setCurrentMainIndex((prev) => (prev === 0 ? allImages.length - 1 : prev - 1))
+  }
+
+  const goToMainNext = () => {
+    setCurrentMainIndex((prev) => (prev === allImages.length - 1 ? 0 : prev + 1))
+  }
+
+  // Keyboard navigation for lightbox
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'ArrowLeft') goToPrevious()
     if (e.key === 'ArrowRight') goToNext()
     if (e.key === 'Escape') closeLightbox()
+  }
+
+  // Handle click on main image - check if it's in left/right 30% zones
+  const handleMainImageClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect()
+    const clickX = e.clientX - rect.left
+    const imageWidth = rect.width
+    const leftZone = imageWidth * 0.3
+    const rightZone = imageWidth * 0.7
+
+    if (allImages.length > 1 && clickX < leftZone) {
+      // Clicked in left 30% - go to previous
+      e.stopPropagation()
+      goToMainPrevious()
+    } else if (allImages.length > 1 && clickX > rightZone) {
+      // Clicked in right 30% - go to next
+      e.stopPropagation()
+      goToMainNext()
+    } else {
+      // Clicked in center 40% - open lightbox
+      openLightbox()
+    }
   }
 
   if (allImages.length === 0) {
@@ -61,14 +92,32 @@ export default function ImageGallery({ images, profileImage, vehicleName }: Imag
       <div className="bg-white/10 backdrop-blur-lg rounded-2xl overflow-hidden shadow-2xl border border-white/20">
         <div
           className="w-full h-96 cursor-pointer relative group"
-          onClick={() => openLightbox(0)}
+          onClick={handleMainImageClick}
         >
           <img
-            src={allImages[0]}
+            src={allImages[currentMainIndex]}
             alt={vehicleName}
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all flex items-center justify-center">
+
+          {/* Left/Right navigation hints on hover */}
+          {allImages.length > 1 && (
+            <>
+              <div className="absolute left-0 top-0 bottom-0 w-[30%] bg-gradient-to-r from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-start pl-4">
+                <div className="bg-white/90 rounded-full p-2">
+                  <ChevronLeft className="w-6 h-6 text-gray-900" />
+                </div>
+              </div>
+              <div className="absolute right-0 top-0 bottom-0 w-[30%] bg-gradient-to-l from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-end pr-4">
+                <div className="bg-white/90 rounded-full p-2">
+                  <ChevronRight className="w-6 h-6 text-gray-900" />
+                </div>
+              </div>
+            </>
+          )}
+
+          {/* Center zoom hint */}
+          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all flex items-center justify-center pointer-events-none">
             <div className="opacity-0 group-hover:opacity-100 transition-opacity">
               <div className="bg-white/90 rounded-full p-3">
                 <svg className="w-8 h-8 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -77,6 +126,13 @@ export default function ImageGallery({ images, profileImage, vehicleName }: Imag
               </div>
             </div>
           </div>
+
+          {/* Image counter */}
+          {allImages.length > 1 && (
+            <div className="absolute top-4 right-4 px-3 py-1 bg-black/60 rounded-full text-white text-sm">
+              {currentMainIndex + 1} / {allImages.length}
+            </div>
+          )}
         </div>
 
         {/* Thumbnail Grid */}
@@ -85,13 +141,17 @@ export default function ImageGallery({ images, profileImage, vehicleName }: Imag
             {allImages.slice(0, 5).map((img, idx) => (
               <div
                 key={idx}
-                className="relative cursor-pointer group"
-                onClick={() => openLightbox(idx)}
+                className={`relative cursor-pointer group transition-all ${
+                  idx === currentMainIndex
+                    ? 'ring-2 ring-red-500'
+                    : 'hover:opacity-80'
+                }`}
+                onClick={() => setCurrentMainIndex(idx)}
               >
                 <img
                   src={img}
                   alt={`${vehicleName} image ${idx + 1}`}
-                  className="w-full h-20 object-cover rounded-lg hover:opacity-80 transition-opacity"
+                  className="w-full h-20 object-cover rounded-lg"
                 />
                 {idx === 4 && allImages.length > 5 && (
                   <div className="absolute inset-0 bg-black/60 rounded-lg flex items-center justify-center">
@@ -122,7 +182,7 @@ export default function ImageGallery({ images, profileImage, vehicleName }: Imag
 
           {/* Image Counter */}
           <div className="absolute top-4 left-1/2 -translate-x-1/2 px-4 py-2 bg-black/50 rounded-full text-white text-sm z-10">
-            {currentImageIndex + 1} / {allImages.length}
+            {lightboxIndex + 1} / {allImages.length}
           </div>
 
           {/* Previous Button */}
@@ -144,8 +204,8 @@ export default function ImageGallery({ images, profileImage, vehicleName }: Imag
             onClick={(e) => e.stopPropagation()}
           >
             <img
-              src={allImages[currentImageIndex]}
-              alt={`${vehicleName} ${currentImageIndex + 1}`}
+              src={allImages[lightboxIndex]}
+              alt={`${vehicleName} ${lightboxIndex + 1}`}
               className="max-w-full max-h-[90vh] object-contain rounded-lg"
             />
           </div>
@@ -171,10 +231,10 @@ export default function ImageGallery({ images, profileImage, vehicleName }: Imag
                   key={idx}
                   onClick={(e) => {
                     e.stopPropagation()
-                    setCurrentImageIndex(idx)
+                    setLightboxIndex(idx)
                   }}
                   className={`flex-shrink-0 cursor-pointer transition-all ${
-                    idx === currentImageIndex
+                    idx === lightboxIndex
                       ? 'ring-2 ring-red-500 opacity-100'
                       : 'opacity-50 hover:opacity-75'
                   }`}

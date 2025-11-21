@@ -191,9 +191,10 @@ export default function VehiclesPage() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredVehicles.map((vehicle) => (
-              <div
+              <Link
                 key={vehicle.id}
-                className="bg-white/10 backdrop-blur-lg rounded-2xl overflow-hidden shadow-2xl border border-white/20 hover:border-red-500/50 transition-all hover:transform hover:scale-105"
+                href={`/vehicles/${vehicle.id}`}
+                className="block bg-white/10 backdrop-blur-lg rounded-2xl overflow-hidden shadow-2xl border border-white/20 hover:border-red-500/50 transition-all hover:transform hover:scale-105 cursor-pointer"
               >
                 {/* Vehicle Image */}
                 {vehicle.profile_image_url ? (
@@ -242,22 +243,15 @@ export default function VehiclesPage() {
                   )}
 
                   {/* Ambassador Info */}
-                  <div className="border-t border-white/10 pt-4 mb-4">
+                  <div className="border-t border-white/10 pt-4">
                     <p className="text-gray-400 text-xs mb-1">Majitel</p>
                     <p className="text-white font-medium">{vehicle.ambassador.full_name}</p>
                     <p className="text-gray-400 text-sm">
                       {vehicle.ambassador.city}, {vehicle.ambassador.region}
                     </p>
                   </div>
-
-                  <Link
-                    href={`/vehicles/${vehicle.id}`}
-                    className="block w-full text-center bg-red-600 text-white px-4 py-3 rounded-lg hover:bg-red-700 transition-colors font-medium"
-                  >
-                    Zobrazit detail a kontakt
-                  </Link>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         )}
