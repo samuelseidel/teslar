@@ -135,12 +135,14 @@ export default function NewVehiclePage() {
           return
         }
 
-        // Auto-populate form fields
+        // Auto-populate form fields and store complete registry data
         const year = vehicleData.year || new Date().getFullYear()
         const model = vehicleData.model || ''
 
         setFormData(prev => ({
           ...prev,
+          vin: vinInput.trim(),
+          vehicle_registry_data: vehicleData.rawData, // Store complete API response
           tesla_model: model,
           tesla_year: year,
           tesla_variant: vehicleData.variant || prev.tesla_variant,
@@ -274,7 +276,9 @@ export default function NewVehiclePage() {
                     type="text"
                     value={vinInput}
                     onChange={(e) => {
-                      setVinInput(e.target.value.toUpperCase())
+                      const upperVin = e.target.value.toUpperCase()
+                      setVinInput(upperVin)
+                      setFormData(prev => ({ ...prev, vin: upperVin || undefined }))
                       setVinLookupError(null)
                       setVinLookupSuccess(false)
                     }}

@@ -57,7 +57,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({
       success: true,
       data: {
-        vin: data.Data.VIN,
+        vin: data.Data.VIN || vin, // Use VIN from response or fallback to request VIN
         make: data.Data.TovarniZnacka,
         model: data.Data.ObchodniOznaceni,
         year: data.Data.DatumPrvniRegistrace

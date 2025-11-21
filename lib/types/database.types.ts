@@ -39,6 +39,8 @@ export interface Ambassador {
 export interface Vehicle {
   id: string
   ambassador_id: string
+  vin: string | null // Vehicle Identification Number (17-character unique identifier)
+  vehicle_registry_data: any | null // Complete vehicle data from Czech Vehicle Registry (MDČ Portal API)
   tesla_model: string // e.g., 'Model S', 'Model 3'
   tesla_variant: string | null // e.g., 'Long Range AWD', 'P100D', 'Performance'
   tesla_year: number
@@ -88,6 +90,8 @@ export interface AmbassadorFormData {
 }
 
 export interface VehicleFormData {
+  vin?: string // Vehicle Identification Number (optional, can be auto-filled via API)
+  vehicle_registry_data?: any // Complete vehicle data from API (stored once during creation)
   tesla_model: string
   tesla_variant?: string // Specific variant like 'Long Range AWD', 'P100D'
   tesla_year: number
