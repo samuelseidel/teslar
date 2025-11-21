@@ -1,3 +1,36 @@
+// Czech regions (kraje)
+export const CZECH_REGIONS = [
+  'Praha',
+  'Středočeský kraj',
+  'Jihočeský kraj',
+  'Plzeňský kraj',
+  'Karlovarský kraj',
+  'Ústecký kraj',
+  'Liberecký kraj',
+  'Královéhradecký kraj',
+  'Pardubický kraj',
+  'Vysočina',
+  'Jihomoravský kraj',
+  'Olomoucký kraj',
+  'Zlínský kraj',
+  'Moravskoslezský kraj',
+] as const
+
+export type CzechRegion = typeof CZECH_REGIONS[number]
+
+// Tesla models
+export const TESLA_MODELS = [
+  'Model S',
+  'Model 3',
+  'Model X',
+  'Model Y',
+  'Cybertruck',
+  'Roadster',
+] as const
+
+export type TeslaModel = typeof TESLA_MODELS[number]
+
+// Ambassador interface (user profile)
 export interface Ambassador {
   id: string
   user_id: string
@@ -5,20 +38,38 @@ export interface Ambassador {
   full_name: string
   phone: string | null
   city: string
-  state: string
+  region: string // Czech region
   country: string
   zip_code: string | null
-  tesla_model: string
-  tesla_year: number
   bio: string | null
   profile_image_url: string | null
+  referral_code: string | null // Tesla referral code
   available: boolean
   created_at: string
   updated_at: string
 }
 
+// Vehicle interface (one ambassador can have multiple vehicles)
+export interface Vehicle {
+  id: string
+  ambassador_id: string
+  tesla_model: string
+  tesla_year: number
+  description: string | null // Specific details about this vehicle
+  available: boolean
+  created_at: string
+  updated_at: string
+}
+
+// Vehicle with ambassador info (for display)
+export interface VehicleWithAmbassador extends Vehicle {
+  ambassador: Ambassador
+}
+
+// Contact request interface (linked to vehicle)
 export interface ContactRequest {
   id: string
+  vehicle_id: string
   ambassador_id: string
   buyer_name: string
   buyer_email: string
@@ -27,17 +78,30 @@ export interface ContactRequest {
   created_at: string
 }
 
+// Contact request with vehicle and ambassador info (for dashboard)
+export interface ContactRequestWithDetails extends ContactRequest {
+  vehicle?: Vehicle
+  ambassador?: Ambassador
+}
+
+// Form data interfaces
 export interface AmbassadorFormData {
   full_name: string
   phone?: string
   city: string
-  state: string
+  region: string // Czech region
   country: string
   zip_code?: string
-  tesla_model: string
-  tesla_year: number
   bio?: string
   profile_image_url?: string
+  referral_code?: string // Tesla referral code
+}
+
+export interface VehicleFormData {
+  tesla_model: string
+  tesla_year: number
+  description?: string
+  available?: boolean
 }
 
 export interface ContactFormData {
