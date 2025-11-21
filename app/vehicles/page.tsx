@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { VehicleWithAmbassador } from '@/lib/types/database.types'
+import { VehicleWithAmbassador, MEETING_OPTIONS, MeetingOption } from '@/lib/types/database.types'
 import Link from 'next/link'
 import { TESLA_MODEL_NAMES } from '@/lib/constants/tesla-variants'
 import LocationSearch, { type LocationResult } from '@/components/LocationSearch'
@@ -11,12 +11,29 @@ import Navigation from '@/components/Navigation'
 
 type VehicleWithDistance = VehicleWithAmbassador & { distance?: number }
 
+// Meeting option labels for display
+const MEETING_LABELS = {
+  test_drive: 'Projeď se',
+  ride_along: 'Svez se',
+  coffee_chat: 'Kafe a pokec',
+} as const
+
+// Get highest priority meeting option
+const getTopMeetingOption = (options: MeetingOption[] | null): MeetingOption | null => {
+  if (!options || options.length === 0) return null
+  if (options.includes('test_drive')) return 'test_drive'
+  if (options.includes('ride_along')) return 'ride_along'
+  if (options.includes('coffee_chat')) return 'coffee_chat'
+  return null
+}
+
 export default function VehiclesPage() {
   const [vehicles, setVehicles] = useState<VehicleWithAmbassador[]>([])
   const [filteredVehicles, setFilteredVehicles] = useState<VehicleWithDistance[]>([])
   const [loading, setLoading] = useState(true)
   const [userLocation, setUserLocation] = useState<LocationResult | null>(null)
   const [filterModel, setFilterModel] = useState('')
+  const [filterMeetingOption, setFilterMeetingOption] = useState<MeetingOption | ''>('')
 
   useEffect(() => {
     fetchVehicles()
@@ -24,7 +41,7 @@ export default function VehiclesPage() {
 
   useEffect(() => {
     filterVehicles()
-  }, [vehicles, userLocation, filterModel])
+  }, [vehicles, userLocation, filterModel, filterMeetingOption])
 
   const fetchVehicles = async () => {
     setLoading(true)
@@ -63,6 +80,13 @@ export default function VehiclesPage() {
       filtered = filtered.filter(v => v.tesla_model === filterModel)
     }
 
+    // Filter by meeting option if selected
+    if (filterMeetingOption) {
+      filtered = filtered.filter(v =>
+        v.meeting_options && v.meeting_options.includes(filterMeetingOption)
+      )
+    }
+
     // Sort by distance if user location is set
     if (userLocation) {
       const sortedWithDistance = sortByDistance(
@@ -96,6 +120,10 @@ export default function VehiclesPage() {
     setFilterModel('')
   }
 
+  const clearMeetingOptionFilter = () => {
+    setFilterMeetingOption('')
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black">
       <Navigation />
@@ -113,7 +141,7 @@ export default function VehiclesPage() {
 
         {/* Filters */}
         <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 shadow-2xl border border-white/20 mb-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div>
               <label className="block text-sm font-medium text-gray-200 mb-2">
                 Vaše lokace
@@ -167,6 +195,49 @@ export default function VehiclesPage() {
                 )}
               </div>
             </div>
+
+            <div>
+              <label htmlFor="meetingOption" className="block text-sm font-medium text-gray-200 mb-2">
+                Typ setkání
+              </label>
+              <div className="relative">
+                <select
+                  id="meetingOption"
+                  value={filterMeetingOption}
+                  onChange={(e) => setFilterMeetingOption(e.target.value as MeetingOption | '')}
+                  className="w-full h-[50px] px-4 pr-10 bg-white/5 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500 transition-all appearance-none cursor-pointer"
+                >
+                  <option value="">Všechny typy</option>
+                  {(Object.keys(MEETING_OPTIONS) as MeetingOption[]).map((option) => (
+                    <option key={option} value={option} className="bg-gray-800">
+                      {MEETING_OPTIONS[option]}
+                    </option>
+                  ))}
+                </select>
+                {/* Custom dropdown arrow */}
+                <svg
+                  className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+                {/* Clear button for meeting option filter */}
+                {filterMeetingOption && (
+                  <button
+                    type="button"
+                    onClick={clearMeetingOptionFilter}
+                    className="absolute right-10 top-1/2 -translate-y-1/2 h-6 w-6 flex items-center justify-center hover:bg-white/10 rounded transition-colors"
+                    title="Vymazat typ setkání"
+                  >
+                    <svg className="w-4 h-4 text-gray-400 hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                )}
+              </div>
+            </div>
           </div>
 
           <div className="mt-4 text-gray-300">
@@ -198,18 +269,30 @@ export default function VehiclesPage() {
               >
                 {/* Vehicle Image */}
                 {vehicle.profile_image_url ? (
-                  <div className="h-48 overflow-hidden">
+                  <div className="h-48 overflow-hidden relative">
                     <img
                       src={vehicle.profile_image_url}
                       alt={`${vehicle.tesla_model} ${vehicle.tesla_variant}`}
                       className="w-full h-full object-cover"
                     />
+                    {/* Meeting option label */}
+                    {getTopMeetingOption(vehicle.meeting_options) && (
+                      <div className="absolute top-3 left-3 px-3 py-1.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white text-sm font-semibold rounded-lg shadow-lg border border-white/20">
+                        {MEETING_LABELS[getTopMeetingOption(vehicle.meeting_options)!]}
+                      </div>
+                    )}
                   </div>
                 ) : (
-                  <div className="h-48 bg-gradient-to-br from-red-900/20 to-gray-900/20 flex items-center justify-center">
+                  <div className="h-48 bg-gradient-to-br from-red-900/20 to-gray-900/20 flex items-center justify-center relative">
                     <svg className="w-20 h-20 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                     </svg>
+                    {/* Meeting option label */}
+                    {getTopMeetingOption(vehicle.meeting_options) && (
+                      <div className="absolute top-3 left-3 px-3 py-1.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white text-sm font-semibold rounded-lg shadow-lg border border-white/20">
+                        {MEETING_LABELS[getTopMeetingOption(vehicle.meeting_options)!]}
+                      </div>
+                    )}
                   </div>
                 )}
 
