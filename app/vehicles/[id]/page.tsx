@@ -6,6 +6,7 @@ import { VehicleWithAmbassador, ContactFormData } from '@/lib/types/database.typ
 import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
 import { getCountryFromVin } from '@/lib/utils/vin-utils'
+import { formatAmbassadorName } from '@/lib/utils/name-utils'
 import ImageGallery from '@/components/ImageGallery'
 import VehicleLocationMap from '@/components/VehicleLocationMap'
 
@@ -299,7 +300,9 @@ export default function VehicleDetailPage() {
               <div className="space-y-3">
                 <div>
                   <p className="text-gray-400 text-sm">Name</p>
-                  <p className="text-white font-medium">{vehicle.ambassador.full_name}</p>
+                  <p className="text-white font-medium">
+                    {formatAmbassadorName(vehicle.ambassador.first_name, vehicle.ambassador.last_name)}
+                  </p>
                 </div>
 
                 {vehicle.ambassador.bio && (

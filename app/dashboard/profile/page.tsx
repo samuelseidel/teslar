@@ -22,7 +22,8 @@ export default function ProfileSettingsPage() {
   const [profileImageFile, setProfileImageFile] = useState<File | null>(null)
   const [showAddressInput, setShowAddressInput] = useState(false)
   const [formData, setFormData] = useState({
-    full_name: '',
+    first_name: '',
+    last_name: '',
     phone: '',
     bio: '',
     referral_code: '',
@@ -66,7 +67,8 @@ export default function ProfileSettingsPage() {
 
       setAmbassador(ambassadorData)
       setFormData({
-        full_name: ambassadorData.full_name || '',
+        first_name: ambassadorData.first_name || '',
+        last_name: ambassadorData.last_name || '',
         phone: ambassadorData.phone || '',
         bio: ambassadorData.bio || '',
         referral_code: ambassadorData.referral_code || '',
@@ -202,18 +204,35 @@ export default function ProfileSettingsPage() {
                 />
               </div>
 
-              {/* Full Name */}
+              {/* First Name */}
               <div className="space-y-2">
-                <Label htmlFor="full_name" className="text-gray-200">
-                  Celé jméno *
+                <Label htmlFor="first_name" className="text-gray-200">
+                  Jméno *
                 </Label>
                 <Input
-                  id="full_name"
+                  id="first_name"
                   type="text"
                   required
-                  value={formData.full_name}
-                  onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
+                  value={formData.first_name}
+                  onChange={(e) => setFormData({ ...formData, first_name: e.target.value })}
                   className="bg-white/5 border-white/20 text-white"
+                  placeholder="Např. Samuel"
+                />
+              </div>
+
+              {/* Last Name */}
+              <div className="space-y-2">
+                <Label htmlFor="last_name" className="text-gray-200">
+                  Příjmení *
+                </Label>
+                <Input
+                  id="last_name"
+                  type="text"
+                  required
+                  value={formData.last_name}
+                  onChange={(e) => setFormData({ ...formData, last_name: e.target.value })}
+                  className="bg-white/5 border-white/20 text-white"
+                  placeholder="Např. Seidel"
                 />
               </div>
 

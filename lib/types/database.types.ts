@@ -18,7 +18,9 @@ export interface Ambassador {
   id: string
   user_id: string
   email: string
-  full_name: string
+  full_name: string // DEPRECATED: Use first_name and last_name
+  first_name: string
+  last_name: string
   phone: string | null
   city: string
   region: string // Administrative division (state, kraj, Bundesland, etc.)
