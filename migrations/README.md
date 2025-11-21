@@ -60,15 +60,24 @@ migrations/20250122_150000_add_storage_policies.sql
 **Purpose:** Adds `country_code` field to existing single-country installations
 **Run if:** You're upgrading from Czech-only schema to multi-country support
 
+### Migration 002: Setup Storage Buckets and RLS Policies
+**File:** `002_setup_storage_buckets.sql`
+**Purpose:** Creates storage buckets (`vehicle-images` and `profile-images`) with RLS policies
+**Run if:** You need to set up image upload functionality
+**Note:** This handles both vehicle images (vehicle-specific) and profile images (user-specific)
+**How to run:** Copy the SQL and run it in Supabase Dashboard → SQL Editor
+
 ## Rolling Back Migrations
 
 Each migration includes rollback instructions in comments at the bottom of the file.
 
 ## Supabase Storage Setup
 
-Storage bucket creation is **not** included in SQL migrations due to permission requirements.
+Storage bucket creation is now available via SQL migration (`002_setup_storage_buckets.sql`).
 
-**Follow this guide:** [`../STORAGE_SETUP_GUIDE.md`](../STORAGE_SETUP_GUIDE.md)
+**Recommended**: Run the SQL migration in your Supabase SQL Editor (see Migration 002 above)
+
+**Alternative**: Manual setup via Dashboard - follow this guide: [`../STORAGE_SETUP_GUIDE.md`](../STORAGE_SETUP_GUIDE.md)
 
 ## Questions?
 
