@@ -1,8 +1,8 @@
 -- ============================================================================
--- Tesla Ambassador Platform - Complete Database Setup (Czech Version)
+-- Tesla Ambassador Platform - Multi-Country Database Setup
 -- ============================================================================
--- Fresh setup script for Czech Tesla Ambassador Platform with multi-vehicle support
--- Run this in your Supabase SQL Editor to create all tables and policies
+-- Extensible setup script supporting multiple countries
+-- Currently supports: Czech Republic, with easy addition of new countries
 -- ============================================================================
 
 -- Enable UUID extension
@@ -12,6 +12,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 -- TABLE: ambassadors
 -- ============================================================================
 -- Tesla owners who want to share their experience with potential buyers
+-- Now supports multiple countries
 
 CREATE TABLE ambassadors (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
@@ -19,22 +20,33 @@ CREATE TABLE ambassadors (
   email TEXT NOT NULL,
   full_name TEXT NOT NULL,
   phone TEXT,
+
+  -- Location fields (country-agnostic)
+  country TEXT NOT NULL,              -- ISO country name or local name (e.g., 'Česká republika', 'United States')
+  country_code TEXT,                  -- Optional ISO 3166-1 alpha-2 code (e.g., 'CZ', 'US', 'DE')
+  region TEXT NOT NULL,               -- Administrative division (state, kraj, Bundesland, etc.)
   city TEXT NOT NULL,
-  region TEXT NOT NULL,  -- Czech regions (kraje)
-  country TEXT DEFAULT 'Česká republika',
   zip_code TEXT,
+
   bio TEXT,
-  referral_code TEXT,  -- Tesla referral code
+  referral_code TEXT,                 -- Tesla referral code
   available BOOLEAN DEFAULT true,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
+
+  -- Constraints
+  CONSTRAINT valid_country CHECK (country IS NOT NULL AND length(trim(country)) > 0),
+  CONSTRAINT valid_region CHECK (region IS NOT NULL AND length(trim(region)) > 0)
 );
 
 -- Indexes for ambassadors
 CREATE INDEX idx_ambassadors_user_id ON ambassadors(user_id);
+CREATE INDEX idx_ambassadors_country ON ambassadors(country);
+CREATE INDEX idx_ambassadors_country_code ON ambassadors(country_code);
 CREATE INDEX idx_ambassadors_region ON ambassadors(region);
 CREATE INDEX idx_ambassadors_city ON ambassadors(city);
 CREATE INDEX idx_ambassadors_available ON ambassadors(available);
+CREATE INDEX idx_ambassadors_country_region ON ambassadors(country, region);
 
 -- ============================================================================
 -- TABLE: vehicles
@@ -52,7 +64,10 @@ CREATE TABLE vehicles (
   images TEXT[],                       -- Array of additional image URLs (up to 5)
   available BOOLEAN DEFAULT true,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
+
+  -- Constraints
+  CONSTRAINT valid_year CHECK (tesla_year >= 2008 AND tesla_year <= EXTRACT(YEAR FROM NOW()) + 2)
 );
 
 -- Indexes for vehicles
@@ -75,7 +90,10 @@ CREATE TABLE contact_requests (
   buyer_phone TEXT,
   message TEXT NOT NULL,
   status TEXT DEFAULT 'new',  -- 'new', 'contacted', 'completed', 'cancelled'
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
+
+  -- Constraints
+  CONSTRAINT valid_status CHECK (status IN ('new', 'contacted', 'completed', 'cancelled'))
 );
 
 -- Indexes for contact_requests
@@ -215,52 +233,76 @@ CREATE TRIGGER update_vehicles_updated_at
   EXECUTE FUNCTION update_updated_at_column();
 
 -- ============================================================================
--- SEED DATA (Optional - Czech Regions Reference)
+-- HELPER VIEWS (Optional)
 -- ============================================================================
--- These are the valid Czech regions (kraje) for the platform
--- Users will select from this list when creating their profile
 
-COMMENT ON COLUMN ambassadors.region IS
-'Valid Czech regions (kraje):
-- Praha
-- Středočeský kraj
-- Jihočeský kraj
-- Plzeňský kraj
-- Karlovarský kraj
-- Ústecký kraj
-- Liberecký kraj
-- Královéhradecký kraj
-- Pardubický kraj
-- Vysočina
-- Jihomoravský kraj
-- Olomoucký kraj
-- Zlínský kraj
-- Moravskoslezský kraj';
+-- View to get complete vehicle information with ambassador location
+CREATE OR REPLACE VIEW vehicles_with_location AS
+SELECT
+  v.*,
+  a.country,
+  a.country_code,
+  a.region,
+  a.city,
+  a.full_name as ambassador_name,
+  a.email as ambassador_email,
+  a.referral_code
+FROM vehicles v
+INNER JOIN ambassadors a ON v.ambassador_id = a.id
+WHERE v.available = true AND a.available = true;
+
+-- ============================================================================
+-- COMMENTS (Documentation)
+-- ============================================================================
+
+COMMENT ON TABLE ambassadors IS 'Tesla owners (ambassadors) who share their experience. Supports multiple countries.';
+COMMENT ON TABLE vehicles IS 'Vehicles owned by ambassadors. One ambassador can own multiple vehicles.';
+COMMENT ON TABLE contact_requests IS 'Contact requests from potential buyers to ambassadors.';
+
+COMMENT ON COLUMN ambassadors.country IS 'Country name (localized or English). Examples: "Česká republika", "United States", "Deutschland"';
+COMMENT ON COLUMN ambassadors.country_code IS 'Optional ISO 3166-1 alpha-2 country code. Examples: "CZ", "US", "DE"';
+COMMENT ON COLUMN ambassadors.region IS 'Administrative division name. Examples: "Praha" (CZ), "California" (US), "Bayern" (DE)';
 
 -- ============================================================================
 -- SETUP COMPLETE
 -- ============================================================================
 
-SELECT 'Database setup completed successfully!' as status,
-       'Tables created: ambassadors, vehicles, contact_requests' as tables,
-       'RLS policies enabled and configured' as security,
-       'Ready for use!' as next_step;
+SELECT
+  'Multi-country database setup completed!' as status,
+  'Tables: ambassadors, vehicles, contact_requests' as tables,
+  'RLS policies enabled and configured' as security,
+  'Supports multiple countries with flexible regions' as feature,
+  'Ready for use!' as next_step;
 
 -- ============================================================================
--- NEXT STEPS:
+-- SUPPORTED COUNTRIES (Application Layer)
 -- ============================================================================
--- 1. Set up Supabase Storage for vehicle images
---    See STORAGE_SETUP_GUIDE.md for detailed instructions
---    - Create bucket: 'vehicle-images'
---    - Configure RLS policies for uploads
+-- The application will define supported countries and their regions in code
+-- This keeps the database flexible while maintaining validation in the app
 --
--- 2. Configure your .env.local file with:
---    - NEXT_PUBLIC_SUPABASE_URL
---    - NEXT_PUBLIC_SUPABASE_ANON_KEY
+-- Current implementation:
+-- - Czech Republic (Česká republika): 14 kraje
+-- - Easy to add: United States, Germany, Austria, Poland, etc.
 --
--- 3. Test the platform:
---    - Sign up as a new user
---    - Create ambassador profile
---    - Add vehicle with images
---    - Submit a contact request
+-- Each country configuration includes:
+-- - Country name (localized)
+-- - Country code (ISO)
+-- - List of regions/states
+-- - Localized region names
+-- ============================================================================
+
+-- ============================================================================
+-- MIGRATION FROM SINGLE-COUNTRY SCHEMA
+-- ============================================================================
+-- If migrating from the Czech-only schema, run:
+--
+-- ALTER TABLE ambassadors
+--   DROP CONSTRAINT IF EXISTS ambassadors_country_check,
+--   ALTER COLUMN country DROP DEFAULT,
+--   ADD COLUMN IF NOT EXISTS country_code TEXT;
+--
+-- UPDATE ambassadors SET country_code = 'CZ' WHERE country = 'Česká republika';
+--
+-- CREATE INDEX IF NOT EXISTS idx_ambassadors_country ON ambassadors(country);
+-- CREATE INDEX IF NOT EXISTS idx_ambassadors_country_code ON ambassadors(country_code);
 -- ============================================================================

@@ -59,20 +59,20 @@ npm install
 
 #### Run the Database Setup
 
-**Option 1: Multi-Country Setup (Recommended)**
+**For Fresh Installation (Empty Database):**
 1. Go to your Supabase project dashboard
 2. Navigate to the SQL Editor
-3. Copy the contents of `supabase-setup-multi-country.sql` from this repository
+3. Copy the contents of **`supabase-setup.sql`** from this repository
 4. Paste and run the SQL in the editor
-5. Supports 6+ countries: 🇨🇿 🇺🇸 🇩🇪 🇦🇹 🇵🇱 🇸🇰 (easy to add more!)
+5. ✅ Done! Supports 6+ countries: 🇨🇿 🇺🇸 🇩🇪 🇦🇹 🇵🇱 🇸🇰
 
-**Option 2: Czech-Only Setup**
-1. Use `supabase-setup.sql` for Czech Republic only
-2. Can upgrade to multi-country later
+**For Existing Installation (Upgrading):**
+1. See the **`migrations/`** folder for versioned migration scripts
+2. Run migrations in order (001, 002, etc.)
 
 **📖 See guides:**
 - [`MULTI_COUNTRY_ARCHITECTURE.md`](./MULTI_COUNTRY_ARCHITECTURE.md) - Architecture design and how to add countries
-- [`MIGRATION_GUIDE.md`](./MIGRATION_GUIDE.md) - Migrate from old schema
+- [`migrations/README.md`](./migrations/README.md) - Migration system documentation
 
 #### Set Up Storage for Vehicle Images
 After running the migration, you need to set up Supabase Storage:
