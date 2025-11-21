@@ -33,69 +33,25 @@ If this is a development/testing environment with no important data:
 
 2. **Run the migration script** as described in Option 1
 
-## Manual Storage Setup (If Needed)
+## Storage Setup (Required)
 
-If the script shows "Storage bucket creation skipped", you need to set up storage manually:
+**⚠️ IMPORTANT**: The migration script will show "Storage bucket creation skipped" - this is expected and normal.
 
-### Create Storage Bucket
+You MUST set up storage manually via the Supabase Dashboard (SQL creation requires admin permissions).
 
-1. Go to **Supabase Dashboard > Storage**
-2. Click **"New bucket"**
-3. Configure:
-   - **Name**: `vehicle-images`
-   - **Public bucket**: ✅ Yes
-   - **File size limit**: `5242880` (5MB)
-   - **Allowed MIME types**: `image/jpeg, image/jpg, image/png, image/webp`
-4. Click **"Create bucket"**
+**👉 Follow the complete guide**: See [`STORAGE_SETUP_GUIDE.md`](./STORAGE_SETUP_GUIDE.md) for detailed step-by-step instructions.
 
-### Set Up Storage Policies
+### Quick Summary
 
-1. Click on the `vehicle-images` bucket
-2. Go to **"Policies"** tab
-3. Click **"New policy"**
+1. Go to **Dashboard > Storage** → **"New bucket"**
+2. Create bucket: `vehicle-images` (public, 5MB limit, image MIME types only)
+3. Add 4 policies via **"Policies"** tab:
+   - Public read (anyone can view)
+   - Authenticated insert (ambassadors can upload to their folders)
+   - Authenticated update (ambassadors can update their files)
+   - Authenticated delete (ambassadors can delete their files)
 
-**Policy 1: Public Read**
-```sql
-CREATE POLICY "Anyone can view vehicle images"
-ON storage.objects FOR SELECT
-USING (bucket_id = 'vehicle-images');
-```
-
-**Policy 2: Ambassador Upload**
-```sql
-CREATE POLICY "Ambassadors can upload their own vehicle images"
-ON storage.objects FOR INSERT
-WITH CHECK (
-  bucket_id = 'vehicle-images'
-  AND (storage.foldername(name))[1] IN (
-    SELECT id::text FROM ambassadors WHERE user_id = auth.uid()
-  )
-);
-```
-
-**Policy 3: Ambassador Update**
-```sql
-CREATE POLICY "Ambassadors can update their own vehicle images"
-ON storage.objects FOR UPDATE
-USING (
-  bucket_id = 'vehicle-images'
-  AND (storage.foldername(name))[1] IN (
-    SELECT id::text FROM ambassadors WHERE user_id = auth.uid()
-  )
-);
-```
-
-**Policy 4: Ambassador Delete**
-```sql
-CREATE POLICY "Ambassadors can delete their own vehicle images"
-ON storage.objects FOR DELETE
-USING (
-  bucket_id = 'vehicle-images'
-  AND (storage.foldername(name))[1] IN (
-    SELECT id::text FROM ambassadors WHERE user_id = auth.uid()
-  )
-);
-```
+See the full guide for exact policy configurations.
 
 ## What Changed
 
