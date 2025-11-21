@@ -2,6 +2,7 @@
 
 import { Vehicle } from '@/lib/types/database.types'
 import { useState } from 'react'
+import { createPortal } from 'react-dom'
 
 interface VehicleCardProps {
   vehicle: Vehicle
@@ -21,6 +22,7 @@ export default function VehicleCard({ vehicle, onEdit, onDelete }: VehicleCardPr
   }
 
   return (
+    <>
     <div className="bg-white/5 border border-white/10 rounded-lg p-6 hover:border-red-500/50 transition-colors">
       <div className="flex justify-between items-start mb-4">
         <div>
@@ -82,8 +84,9 @@ export default function VehicleCard({ vehicle, onEdit, onDelete }: VehicleCardPr
           Delete
         </button>
       </div>
+    </div>
 
-      {showDeleteConfirm && (
+      {showDeleteConfirm && typeof document !== 'undefined' && createPortal(
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
           <div className="bg-gray-900 border border-white/20 rounded-2xl p-6 max-w-md mx-4">
             <h3 className="text-xl font-bold text-white mb-2">Confirm Delete</h3>
@@ -107,8 +110,9 @@ export default function VehicleCard({ vehicle, onEdit, onDelete }: VehicleCardPr
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
-    </div>
+    </>
   )
 }
