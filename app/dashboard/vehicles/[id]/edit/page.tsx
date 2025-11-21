@@ -17,6 +17,13 @@ import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import Link from 'next/link'
+import ImageUpload from '@/components/ImageUpload'
+import MultiImageUpload from '@/components/MultiImageUpload'
+import {
+  uploadVehicleProfileImage,
+  uploadVehicleImages,
+  deleteVehicleImages,
+} from '@/lib/supabase/storage'
 
 export default function EditVehiclePage() {
   const router = useRouter()
@@ -26,6 +33,7 @@ export default function EditVehiclePage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [loading, setLoading] = useState(true)
   const [vehicle, setVehicle] = useState<Vehicle | null>(null)
+  const [ambassadorId, setAmbassadorId] = useState<string | null>(null)
   const [formData, setFormData] = useState<VehicleFormData>({
     tesla_model: '',
     tesla_variant: '',
@@ -33,6 +41,11 @@ export default function EditVehiclePage() {
     description: '',
     available: true,
   })
+
+  const [profileImageFile, setProfileImageFile] = useState<File | null>(null)
+  const [additionalImageFiles, setAdditionalImageFiles] = useState<File[]>([])
+  const [existingImages, setExistingImages] = useState<string[]>([])
+  const [imagesToDelete, setImagesToDelete] = useState<string[]>([])
 
   const [availableVariants, setAvailableVariants] = useState<string[]>([])
   const [yearRange, setYearRange] = useState({ min: 2012, max: new Date().getFullYear() })
@@ -84,6 +97,8 @@ export default function EditVehiclePage() {
         return
       }
 
+      setAmbassadorId(ambassador.id)
+
       const { data: vehicleData, error } = await supabase
         .from('vehicles')
         .select('*')
@@ -104,6 +119,11 @@ export default function EditVehiclePage() {
         description: vehicleData.description || '',
         available: vehicleData.available,
       })
+
+      // Load existing images
+      if (vehicleData.images && Array.isArray(vehicleData.images)) {
+        setExistingImages(vehicleData.images)
+      }
     } catch (error) {
       console.error('Error fetching vehicle:', error)
       router.push('/dashboard')
@@ -124,15 +144,45 @@ export default function EditVehiclePage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!vehicle) return
+    if (!vehicle || !ambassadorId) return
 
     setIsSubmitting(true)
     try {
       const supabase = createClient()
+
+      // Delete images marked for deletion
+      if (imagesToDelete.length > 0) {
+        await deleteVehicleImages(imagesToDelete, 'vehicle-images')
+      }
+
+      // Upload new profile image if provided
+      let profileImageUrl = vehicle.profile_image_url
+      if (profileImageFile) {
+        profileImageUrl = await uploadVehicleProfileImage(
+          ambassadorId,
+          vehicleId,
+          profileImageFile
+        )
+      }
+
+      // Upload new additional images if provided
+      let updatedImages = existingImages.filter(img => !imagesToDelete.includes(img))
+      if (additionalImageFiles.length > 0) {
+        const newImageUrls = await uploadVehicleImages(
+          ambassadorId,
+          vehicleId,
+          additionalImageFiles
+        )
+        updatedImages = [...updatedImages, ...newImageUrls]
+      }
+
+      // Update vehicle with new data and image URLs
       const { error } = await supabase
         .from('vehicles')
         .update({
           ...formData,
+          profile_image_url: profileImageUrl,
+          images: updatedImages.length > 0 ? updatedImages : null,
           updated_at: new Date().toISOString(),
         })
         .eq('id', vehicleId)
@@ -146,6 +196,12 @@ export default function EditVehiclePage() {
     } finally {
       setIsSubmitting(false)
     }
+  }
+
+  const handleRemoveExistingImage = (index: number) => {
+    const imageUrl = existingImages[index]
+    setImagesToDelete([...imagesToDelete, imageUrl])
+    setExistingImages(existingImages.filter((_, i) => i !== index))
   }
 
   const generateYearOptions = () => {
@@ -269,6 +325,57 @@ export default function EditVehiclePage() {
                     No variants found for {formData.tesla_model} {formData.tesla_year}
                   </p>
                 )}
+              </div>
+
+              {/* Profile Image */}
+              <div className="space-y-2">
+                <Label className="text-gray-200">
+                  Profile Image
+                </Label>
+                <ImageUpload
+                  value={vehicle?.profile_image_url}
+                  onChange={(file) => setProfileImageFile(file)}
+                  label="Upload vehicle profile image"
+                  aspectRatio="video"
+                  maxSizeMB={5}
+                />
+              </div>
+
+              {/* Additional Images */}
+              <div className="space-y-2">
+                <Label className="text-gray-200">
+                  Additional Images (up to 5 total)
+                </Label>
+                {existingImages.length > 0 && (
+                  <div className="mb-3">
+                    <p className="text-sm text-gray-400 mb-2">
+                      Existing images ({existingImages.length})
+                    </p>
+                    <div className="grid grid-cols-5 gap-2">
+                      {existingImages.map((img, idx) => (
+                        <div key={idx} className="relative group">
+                          <img
+                            src={img}
+                            alt={`Existing image ${idx + 1}`}
+                            className="w-full h-20 object-cover rounded border border-white/20"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveExistingImage(idx)}
+                            className="absolute top-1 right-1 bg-red-600 hover:bg-red-700 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                          >
+                            ×
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                <MultiImageUpload
+                  onChange={(files) => setAdditionalImageFiles(files)}
+                  maxImages={5 - existingImages.length}
+                  maxSizeMB={5}
+                />
               </div>
 
               {/* Description */}
