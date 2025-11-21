@@ -5,12 +5,16 @@ import { createClient } from '@/lib/supabase/client'
 import { VehicleWithAmbassador } from '@/lib/types/database.types'
 import Link from 'next/link'
 import { TESLA_MODEL_NAMES } from '@/lib/constants/tesla-variants'
+import LocationSearch, { type LocationResult } from '@/components/LocationSearch'
+import { sortByDistance, formatDistance } from '@/lib/utils/distance'
+
+type VehicleWithDistance = VehicleWithAmbassador & { distance?: number }
 
 export default function VehiclesPage() {
   const [vehicles, setVehicles] = useState<VehicleWithAmbassador[]>([])
-  const [filteredVehicles, setFilteredVehicles] = useState<VehicleWithAmbassador[]>([])
+  const [filteredVehicles, setFilteredVehicles] = useState<VehicleWithDistance[]>([])
   const [loading, setLoading] = useState(true)
-  const [searchCity, setSearchCity] = useState('')
+  const [userLocation, setUserLocation] = useState<LocationResult | null>(null)
   const [filterModel, setFilterModel] = useState('')
 
   useEffect(() => {
@@ -19,7 +23,7 @@ export default function VehiclesPage() {
 
   useEffect(() => {
     filterVehicles()
-  }, [vehicles, searchCity, filterModel])
+  }, [vehicles, userLocation, filterModel])
 
   const fetchVehicles = async () => {
     setLoading(true)
@@ -53,21 +57,38 @@ export default function VehiclesPage() {
   const filterVehicles = () => {
     let filtered = [...vehicles]
 
-    if (searchCity) {
-      filtered = filtered.filter(v =>
-        v.ambassador.city.toLowerCase().includes(searchCity.toLowerCase())
-      )
-    }
-
+    // Filter by model if selected
     if (filterModel) {
       filtered = filtered.filter(v => v.tesla_model === filterModel)
     }
 
-    setFilteredVehicles(filtered)
+    // Sort by distance if user location is set
+    if (userLocation) {
+      const sortedWithDistance = sortByDistance(
+        filtered,
+        { latitude: userLocation.latitude, longitude: userLocation.longitude },
+        (vehicle) => {
+          if (vehicle.ambassador.latitude && vehicle.ambassador.longitude) {
+            return {
+              latitude: vehicle.ambassador.latitude,
+              longitude: vehicle.ambassador.longitude,
+            }
+          }
+          return null
+        }
+      )
+      setFilteredVehicles(sortedWithDistance)
+    } else {
+      setFilteredVehicles(filtered)
+    }
+  }
+
+  const handleLocationSelect = (location: LocationResult | null) => {
+    setUserLocation(location)
   }
 
   const clearFilters = () => {
-    setSearchCity('')
+    setUserLocation(null)
     setFilterModel('')
   }
 
@@ -110,17 +131,19 @@ export default function VehiclesPage() {
         <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 shadow-2xl border border-white/20 mb-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <label htmlFor="city" className="block text-sm font-medium text-gray-200 mb-2">
-                Hledat podle města
+              <label className="block text-sm font-medium text-gray-200 mb-2">
+                Vaše lokace
               </label>
-              <input
-                type="text"
-                id="city"
-                value={searchCity}
-                onChange={(e) => setSearchCity(e.target.value)}
-                placeholder="Zadejte název města"
-                className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500"
+              <LocationSearch
+                onLocationSelect={handleLocationSelect}
+                placeholder="Zadejte vaši adresu..."
+                className="w-full"
               />
+              {userLocation && (
+                <p className="text-xs text-green-400 mt-1">
+                  📍 {userLocation.formattedAddress}
+                </p>
+              )}
             </div>
 
             <div>
@@ -154,6 +177,11 @@ export default function VehiclesPage() {
 
           <div className="mt-4 text-gray-300">
             Zobrazeno {filteredVehicles.length} z {vehicles.length} vozidel
+            {userLocation && filteredVehicles.length > 0 && (
+              <span className="text-blue-400 ml-2">
+                • Seřazeno podle vzdálenosti
+              </span>
+            )}
           </div>
         </div>
 
@@ -198,9 +226,20 @@ export default function VehiclesPage() {
                 <div className="p-6">
                   {/* Vehicle Info */}
                   <div className="mb-4">
-                    <h3 className="text-2xl font-bold text-white mb-1">
-                      {vehicle.tesla_model}
-                    </h3>
+                    <div className="flex items-start justify-between gap-2 mb-1">
+                      <h3 className="text-2xl font-bold text-white">
+                        {vehicle.tesla_model}
+                      </h3>
+                      {vehicle.distance !== undefined && (
+                        <span className="flex-shrink-0 px-3 py-1 bg-gradient-to-r from-blue-500/20 to-blue-600/20 border border-blue-500/50 text-blue-300 text-sm font-semibold rounded-full flex items-center gap-1.5">
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                          </svg>
+                          {formatDistance(vehicle.distance)}
+                        </span>
+                      )}
+                    </div>
                     {vehicle.tesla_variant && (
                       <p className="text-red-400 font-medium">{vehicle.tesla_variant}</p>
                     )}

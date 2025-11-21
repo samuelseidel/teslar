@@ -25,6 +25,8 @@ export interface Ambassador {
   country: string // Country name (localized)
   country_code: string | null // ISO 3166-1 alpha-2 code (e.g., 'CZ', 'US', 'DE')
   zip_code: string | null
+  latitude: number | null // Latitude from Google Maps Geocoding API
+  longitude: number | null // Longitude from Google Maps Geocoding API
   bio: string | null
   profile_image_url: string | null
   referral_code: string | null // Tesla referral code
