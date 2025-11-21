@@ -40,6 +40,15 @@ export interface Ambassador {
   updated_at: string
 }
 
+// Meeting type options
+export type MeetingOption = 'test_drive' | 'ride_along' | 'coffee_chat'
+
+export const MEETING_OPTIONS = {
+  test_drive: 'Zkušební jízda',
+  ride_along: 'Svezení',
+  coffee_chat: 'Kafe a povídání',
+} as const
+
 // Vehicle interface (one ambassador can have multiple vehicles)
 export interface Vehicle {
   id: string
@@ -52,6 +61,7 @@ export interface Vehicle {
   description: string | null // Specific details about this vehicle (color, features, etc.)
   profile_image_url: string | null // Main profile image (square/round) for listings
   images: string[] | null // Array of additional image URLs (up to 5 total)
+  meeting_options: MeetingOption[] | null // Types of meetings offered: test_drive, ride_along, coffee_chat
   available: boolean
   created_at: string
   updated_at: string
@@ -101,6 +111,7 @@ export interface VehicleFormData {
   tesla_variant?: string // Specific variant like 'Long Range AWD', 'P100D'
   tesla_year: number
   description?: string
+  meeting_options?: MeetingOption[] // Types of meetings offered
   available?: boolean
 }
 

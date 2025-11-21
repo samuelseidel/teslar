@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
-import { VehicleFormData } from '@/lib/types/database.types'
+import { VehicleFormData, MEETING_OPTIONS, MeetingOption } from '@/lib/types/database.types'
 import {
   TESLA_MODEL_NAMES,
   TeslaModelName,
@@ -34,6 +34,7 @@ export default function NewVehiclePage() {
     tesla_variant: '',
     tesla_year: new Date().getFullYear(),
     description: '',
+    meeting_options: ['test_drive', 'ride_along', 'coffee_chat'],
     available: true,
   })
 
@@ -466,6 +467,48 @@ export default function NewVehiclePage() {
                   placeholder="e.g., Red with white interior, FSD, 19-inch wheels..."
                   className="bg-white/5 border-white/20 text-white placeholder-gray-500"
                 />
+              </div>
+
+              {/* Meeting Options */}
+              <div className="space-y-3">
+                <Label className="text-gray-200">
+                  Typy setkání *
+                </Label>
+                <p className="text-sm text-gray-400">
+                  Vyberte, co můžete nabídnout zájemcům (můžete vybrat více možností)
+                </p>
+                <div className="space-y-2">
+                  {(Object.keys(MEETING_OPTIONS) as MeetingOption[]).map((option) => (
+                    <div key={option} className="flex items-center space-x-3">
+                      <input
+                        type="checkbox"
+                        id={`meeting_${option}`}
+                        checked={formData.meeting_options?.includes(option) || false}
+                        onChange={(e) => {
+                          const currentOptions = formData.meeting_options || []
+                          if (e.target.checked) {
+                            setFormData({
+                              ...formData,
+                              meeting_options: [...currentOptions, option]
+                            })
+                          } else {
+                            setFormData({
+                              ...formData,
+                              meeting_options: currentOptions.filter(o => o !== option)
+                            })
+                          }
+                        }}
+                        className="w-4 h-4 rounded border-white/20 bg-white/5 text-red-600 focus:ring-red-500 focus:ring-offset-gray-900"
+                      />
+                      <Label
+                        htmlFor={`meeting_${option}`}
+                        className="text-gray-200 font-normal cursor-pointer"
+                      >
+                        {MEETING_OPTIONS[option]}
+                      </Label>
+                    </div>
+                  ))}
+                </div>
               </div>
 
               {/* Profile Image */}
