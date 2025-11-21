@@ -187,7 +187,7 @@ export default function VehicleDetailPage() {
             {/* Vehicle Details */}
             <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 shadow-2xl border border-white/20">
               <h1 className="text-4xl font-bold text-white mb-2">
-                Tesla {vehicle.tesla_model} {vehicle.tesla_year}
+                Tesla {vehicle.tesla_model} <span className="text-gray-400 font-normal">{vehicle.tesla_year}</span>
               </h1>
               {vehicle.tesla_variant && (
                 <p className="text-2xl text-red-400 font-medium mb-6">{vehicle.tesla_variant}</p>
