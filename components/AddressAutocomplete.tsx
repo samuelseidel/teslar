@@ -4,7 +4,8 @@ import { useEffect, useRef, useState } from 'react'
 import { useLoadScript } from '@react-google-maps/api'
 import usePlacesAutocomplete, { getGeocode, getLatLng } from 'use-places-autocomplete'
 import { Input } from '@/components/ui/input'
-import { MapPin } from 'lucide-react'
+import { MapPin, Locate } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 
 const libraries: ("places")[] = ["places"]
 
@@ -41,6 +42,8 @@ export default function AddressAutocomplete({
 }: AddressAutocompleteProps) {
   const inputRef = useRef<HTMLInputElement>(null)
   const [isOpen, setIsOpen] = useState(false)
+  const [isGettingLocation, setIsGettingLocation] = useState(false)
+  const [locationError, setLocationError] = useState<string | null>(null)
 
   // Load Google Maps script
   const { isLoaded, loadError } = useLoadScript({
@@ -149,6 +152,79 @@ export default function AddressAutocomplete({
     setIsOpen(true)
   }
 
+  const handleUseMyLocation = () => {
+    if (!navigator.geolocation) {
+      setLocationError('Geolocation is not supported by your browser')
+      return
+    }
+
+    setIsGettingLocation(true)
+    setLocationError(null)
+
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        try {
+          const { latitude, longitude } = position.coords
+
+          // Reverse geocode to get address
+          const results = await getGeocode({
+            location: { lat: latitude, lng: longitude },
+          })
+
+          if (results && results.length > 0) {
+            const formattedAddress = results[0].formatted_address
+            setValue(formattedAddress, false)
+
+            // Extract and send full address components
+            const extractedComponents = extractAddressComponents(results[0].address_components)
+            const addressData: AddressComponents = {
+              city: extractedComponents.city || '',
+              region: extractedComponents.region || '',
+              country: extractedComponents.country || '',
+              countryCode: extractedComponents.countryCode || '',
+              street: extractedComponents.street,
+              zipCode: extractedComponents.zipCode,
+              latitude,
+              longitude,
+              formattedAddress,
+            }
+
+            onAddressSelect(addressData)
+            setIsOpen(false)
+          }
+        } catch (error) {
+          console.error('Error reverse geocoding location:', error)
+          setLocationError('Could not determine your address')
+        } finally {
+          setIsGettingLocation(false)
+        }
+      },
+      (error) => {
+        console.error('Geolocation error:', error)
+        setIsGettingLocation(false)
+
+        switch (error.code) {
+          case error.PERMISSION_DENIED:
+            setLocationError('Location access denied. Please enable location permissions.')
+            break
+          case error.POSITION_UNAVAILABLE:
+            setLocationError('Location information unavailable')
+            break
+          case error.TIMEOUT:
+            setLocationError('Location request timed out')
+            break
+          default:
+            setLocationError('An error occurred while getting your location')
+        }
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0,
+      }
+    )
+  }
+
   if (loadError) {
     return (
       <div className="rounded-md bg-red-500/20 border border-red-500 p-4">
@@ -174,26 +250,46 @@ export default function AddressAutocomplete({
   }
 
   return (
-    <div className={`relative ${className}`}>
+    <div className={`${className}`}>
       {label && (
         <label className="block text-sm font-medium text-gray-200 mb-1">
           {label} {required && <span className="text-red-400">*</span>}
         </label>
       )}
 
-      <div className="relative">
-        <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-        <Input
-          ref={inputRef}
-          value={value}
-          onChange={handleInput}
-          onFocus={() => setIsOpen(true)}
-          disabled={!ready}
-          placeholder={placeholder}
-          required={required}
-          className="pl-10 bg-white/5 border-white/20 text-white placeholder-gray-400 focus:ring-red-500"
-        />
+      <div className="flex gap-2 mb-2">
+        <div className="relative flex-1 z-50">
+          <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+          <Input
+            ref={inputRef}
+            value={value}
+            onChange={handleInput}
+            onFocus={() => setIsOpen(true)}
+            disabled={!ready || isGettingLocation}
+            placeholder={placeholder}
+            required={required}
+            className="pl-10 bg-white/5 border-white/20 text-white placeholder-gray-400 focus:ring-red-500"
+          />
+        </div>
+
+        {/* Use My Location Button */}
+        <Button
+          type="button"
+          onClick={handleUseMyLocation}
+          disabled={!ready || isGettingLocation}
+          variant="outline"
+          className="bg-white/5 border-white/20 text-white hover:bg-white/10 hover:border-white/30 flex-shrink-0"
+        >
+          <Locate className={`w-4 h-4 ${isGettingLocation ? 'animate-pulse' : ''}`} />
+        </Button>
       </div>
+
+      {/* Location Error */}
+      {locationError && (
+        <div className="rounded-md bg-yellow-500/20 border border-yellow-500/50 p-3 mb-2">
+          <p className="text-sm text-yellow-300">{locationError}</p>
+        </div>
+      )}
 
       {/* Suggestions dropdown */}
       {isOpen && status === 'OK' && (

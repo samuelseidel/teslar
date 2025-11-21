@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useLoadScript } from '@react-google-maps/api'
 import usePlacesAutocomplete, { getGeocode, getLatLng } from 'use-places-autocomplete'
 import { Input } from '@/components/ui/input'
-import { Search, MapPin, X } from 'lucide-react'
+import { Search, MapPin, X, Locate } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 const libraries: ("places")[] = ["places"]
@@ -32,6 +32,8 @@ export default function LocationSearch({
   const inputRef = useRef<HTMLInputElement>(null)
   const [isOpen, setIsOpen] = useState(false)
   const [selectedLocation, setSelectedLocation] = useState<LocationResult | null>(null)
+  const [isGettingLocation, setIsGettingLocation] = useState(false)
+  const [locationError, setLocationError] = useState<string | null>(null)
 
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '',
@@ -98,6 +100,81 @@ export default function LocationSearch({
     }
   }
 
+  const handleUseMyLocation = () => {
+    if (!navigator.geolocation) {
+      setLocationError('Geolocation is not supported by your browser')
+      return
+    }
+
+    setIsGettingLocation(true)
+    setLocationError(null)
+
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        try {
+          const { latitude, longitude } = position.coords
+
+          // Reverse geocode to get address
+          const results = await getGeocode({
+            location: { lat: latitude, lng: longitude },
+          })
+
+          if (results && results.length > 0) {
+            const formattedAddress = results[0].formatted_address
+
+            // Extract city from address components
+            let city: string | undefined
+            results[0].address_components.forEach((component) => {
+              if (component.types.includes('locality')) {
+                city = component.long_name
+              }
+            })
+
+            const location: LocationResult = {
+              latitude,
+              longitude,
+              formattedAddress,
+              city,
+            }
+
+            setValue(formattedAddress, false)
+            setSelectedLocation(location)
+            onLocationSelect(location)
+            setIsOpen(false)
+          }
+        } catch (error) {
+          console.error('Error reverse geocoding location:', error)
+          setLocationError('Could not determine your address')
+        } finally {
+          setIsGettingLocation(false)
+        }
+      },
+      (error) => {
+        console.error('Geolocation error:', error)
+        setIsGettingLocation(false)
+
+        switch (error.code) {
+          case error.PERMISSION_DENIED:
+            setLocationError('Location access denied. Please enable location permissions.')
+            break
+          case error.POSITION_UNAVAILABLE:
+            setLocationError('Location information unavailable')
+            break
+          case error.TIMEOUT:
+            setLocationError('Location request timed out')
+            break
+          default:
+            setLocationError('An error occurred while getting your location')
+        }
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0,
+      }
+    )
+  }
+
   if (loadError) {
     return (
       <div className="rounded-md bg-red-500/20 border border-red-500 p-4">
@@ -119,30 +196,51 @@ export default function LocationSearch({
   }
 
   return (
-    <div className={`relative ${className}`}>
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-        <Input
-          ref={inputRef}
-          value={value}
-          onChange={handleInput}
-          onFocus={() => setIsOpen(true)}
-          disabled={!ready}
-          placeholder={placeholder}
-          className="pl-10 pr-10 bg-white/5 border-white/20 text-white placeholder-gray-400 focus:ring-red-500"
-        />
-        {value && (
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            onClick={handleClear}
-            className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 p-0 hover:bg-white/10"
-          >
-            <X className="w-4 h-4 text-gray-400" />
-          </Button>
-        )}
+    <div className={`${className}`}>
+      <div className="flex gap-2 mb-3">
+        <div className="relative flex-1 z-50">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+          <Input
+            ref={inputRef}
+            value={value}
+            onChange={handleInput}
+            onFocus={() => setIsOpen(true)}
+            disabled={!ready || isGettingLocation}
+            placeholder={placeholder}
+            className="pl-10 pr-10 bg-white/5 border-white/20 text-white placeholder-gray-400 focus:ring-red-500"
+          />
+          {value && !isGettingLocation && (
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={handleClear}
+              className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 p-0 hover:bg-white/10"
+            >
+              <X className="w-4 h-4 text-gray-400" />
+            </Button>
+          )}
+        </div>
+
+        {/* Use My Location Button */}
+        <Button
+          type="button"
+          onClick={handleUseMyLocation}
+          disabled={!ready || isGettingLocation}
+          variant="outline"
+          className="bg-white/5 border-white/20 text-white hover:bg-white/10 hover:border-white/30 flex-shrink-0"
+        >
+          <Locate className={`w-4 h-4 mr-2 ${isGettingLocation ? 'animate-pulse' : ''}`} />
+          {isGettingLocation ? 'Getting location...' : 'Use My Location'}
+        </Button>
       </div>
+
+      {/* Location Error */}
+      {locationError && (
+        <div className="rounded-md bg-yellow-500/20 border border-yellow-500/50 p-3">
+          <p className="text-sm text-yellow-300">{locationError}</p>
+        </div>
+      )}
 
       {/* Suggestions dropdown */}
       {isOpen && status === 'OK' && (
