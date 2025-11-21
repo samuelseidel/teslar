@@ -1,22 +1,5 @@
-// Czech regions (kraje)
-export const CZECH_REGIONS = [
-  'Praha',
-  'Středočeský kraj',
-  'Jihočeský kraj',
-  'Plzeňský kraj',
-  'Karlovarský kraj',
-  'Ústecký kraj',
-  'Liberecký kraj',
-  'Královéhradecký kraj',
-  'Pardubický kraj',
-  'Vysočina',
-  'Jihomoravský kraj',
-  'Olomoucký kraj',
-  'Zlínský kraj',
-  'Moravskoslezský kraj',
-] as const
-
-export type CzechRegion = typeof CZECH_REGIONS[number]
+// Re-export from countries for backward compatibility
+export { CZECH_REGIONS } from '@/lib/constants/countries'
 
 // Tesla models
 export const TESLA_MODELS = [
@@ -38,8 +21,9 @@ export interface Ambassador {
   full_name: string
   phone: string | null
   city: string
-  region: string // Czech region
-  country: string
+  region: string // Administrative division (state, kraj, Bundesland, etc.)
+  country: string // Country name (localized)
+  country_code: string | null // ISO 3166-1 alpha-2 code (e.g., 'CZ', 'US', 'DE')
   zip_code: string | null
   bio: string | null
   profile_image_url: string | null
@@ -92,8 +76,9 @@ export interface AmbassadorFormData {
   full_name: string
   phone?: string
   city: string
-  region: string // Czech region
-  country: string
+  region: string // Administrative division (state, kraj, etc.)
+  country: string // Country name (localized)
+  country_code?: string // ISO country code
   zip_code?: string
   bio?: string
   profile_image_url?: string

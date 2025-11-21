@@ -5,7 +5,14 @@ import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
-import { CZECH_REGIONS } from '@/lib/types/database.types'
+import {
+  getCountriesList,
+  getRegionsForCountry,
+  getCountry,
+  DEFAULT_COUNTRY,
+  DEFAULT_COUNTRY_NAME,
+  type CountryRegion,
+} from '@/lib/constants/countries'
 import {
   TESLA_MODEL_NAMES,
   getVariantsForModelAndYear,
@@ -25,7 +32,8 @@ export default function CreateAmbassadorProfile() {
     phone: '',
     city: '',
     region: '',
-    country: 'Česká republika',
+    country: DEFAULT_COUNTRY_NAME,
+    country_code: DEFAULT_COUNTRY,
     zip_code: '',
     bio: '',
     referral_code: '',
@@ -38,6 +46,7 @@ export default function CreateAmbassadorProfile() {
     description: '',
   })
 
+  const [availableRegions, setAvailableRegions] = useState<string[]>(getRegionsForCountry(DEFAULT_COUNTRY))
   const [availableVariants, setAvailableVariants] = useState<TeslaVariantInfo[]>([])
   const [yearRange, setYearRange] = useState({ min: 2008, max: new Date().getFullYear() + 1 })
 
@@ -78,6 +87,19 @@ export default function CreateAmbassadorProfile() {
       }
     }
   }, [vehicleData.tesla_model, vehicleData.tesla_year])
+
+  // Update available regions when country changes
+  useEffect(() => {
+    if (formData.country_code) {
+      const regions = getRegionsForCountry(formData.country_code)
+      setAvailableRegions(regions)
+
+      // Reset region if it's not valid for the new country
+      if (formData.region && !regions.includes(formData.region)) {
+        setFormData(prev => ({ ...prev, region: '' }))
+      }
+    }
+  }, [formData.country_code])
 
   // Handle profile image selection
   const handleProfileImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -330,6 +352,56 @@ export default function CreateAmbassadorProfile() {
               <h2 className="text-xl font-semibold text-white mb-4">Umístění</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
+                  <label htmlFor="country" className="block text-sm font-medium text-gray-200 mb-1">
+                    Země *
+                  </label>
+                  <select
+                    id="country"
+                    required
+                    value={formData.country_code}
+                    onChange={(e) => {
+                      const country = getCountry(e.target.value)
+                      setFormData({
+                        ...formData,
+                        country_code: e.target.value,
+                        country: country?.name || e.target.value,
+                      })
+                    }}
+                    className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+                  >
+                    <option value="" className="bg-gray-800">Vyberte zemi</option>
+                    {getCountriesList().map((country) => (
+                      <option key={country.code} value={country.code} className="bg-gray-800">
+                        {country.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label htmlFor="region" className="block text-sm font-medium text-gray-200 mb-1">
+                    {formData.country_code ? `${getCountry(formData.country_code)?.regionType || 'Region'} *` : 'Region *'}
+                  </label>
+                  <select
+                    id="region"
+                    required
+                    value={formData.region}
+                    onChange={(e) => setFormData({ ...formData, region: e.target.value })}
+                    className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+                    disabled={!formData.country_code}
+                  >
+                    <option value="" className="bg-gray-800">
+                      {formData.country_code ? 'Vyberte region' : 'Nejdříve vyberte zemi'}
+                    </option>
+                    {availableRegions.map((region) => (
+                      <option key={region} value={region} className="bg-gray-800">
+                        {region}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
                   <label htmlFor="city" className="block text-sm font-medium text-gray-200 mb-1">
                     Město *
                   </label>
@@ -345,28 +417,8 @@ export default function CreateAmbassadorProfile() {
                 </div>
 
                 <div>
-                  <label htmlFor="region" className="block text-sm font-medium text-gray-200 mb-1">
-                    Kraj *
-                  </label>
-                  <select
-                    id="region"
-                    required
-                    value={formData.region}
-                    onChange={(e) => setFormData({ ...formData, region: e.target.value })}
-                    className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500"
-                  >
-                    <option value="" className="bg-gray-800">Vyberte kraj</option>
-                    {CZECH_REGIONS.map((region) => (
-                      <option key={region} value={region} className="bg-gray-800">
-                        {region}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
                   <label htmlFor="zip_code" className="block text-sm font-medium text-gray-200 mb-1">
-                    PSČ
+                    PSČ / Zip Code
                   </label>
                   <input
                     type="text"
@@ -375,19 +427,6 @@ export default function CreateAmbassadorProfile() {
                     onChange={(e) => setFormData({ ...formData, zip_code: e.target.value })}
                     className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500"
                     placeholder="110 00"
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="country" className="block text-sm font-medium text-gray-200 mb-1">
-                    Země
-                  </label>
-                  <input
-                    type="text"
-                    id="country"
-                    value={formData.country}
-                    disabled
-                    className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-lg text-gray-400"
                   />
                 </div>
               </div>

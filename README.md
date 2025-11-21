@@ -5,8 +5,8 @@ A modern platform connecting Tesla owners (ambassadors) with potential buyers wh
 ## 🚀 Features
 
 ### For Potential Buyers
-- Browse Tesla vehicles in your area (Czech Republic)
-- Filter by location, region (kraje), and Tesla model
+- Browse Tesla vehicles worldwide (multi-country support)
+- Filter by country, region, and Tesla model
 - View vehicle details with photos and specifications
 - See Tesla referral codes from ambassadors
 - Contact ambassadors directly through the platform
@@ -14,6 +14,7 @@ A modern platform connecting Tesla owners (ambassadors) with potential buyers wh
 
 ### For Tesla Owners (Ambassadors)
 - Create and manage your ambassador profile
+- Support for multiple countries (Czech Republic, US, Germany, Austria, Poland, Slovakia, and more)
 - Add multiple Tesla vehicles to your profile
 - Upload vehicle photos (profile + up to 5 additional images)
 - Share your Tesla referral code
@@ -31,7 +32,8 @@ A modern platform connecting Tesla owners (ambassadors) with potential buyers wh
 - **Authentication**: Supabase Auth
 - **Storage**: Supabase Storage (vehicle images)
 - **Deployment**: Vercel (recommended)
-- **Localization**: Czech (Czech regions, language)
+- **Multi-Country**: Extensible architecture supporting 6+ countries
+- **Localization**: Country-specific regions and languages
 
 ## 📋 Prerequisites
 
@@ -56,13 +58,21 @@ npm install
 2. Wait for the project to be set up (this takes a few minutes)
 
 #### Run the Database Setup
+
+**Option 1: Multi-Country Setup (Recommended)**
 1. Go to your Supabase project dashboard
 2. Navigate to the SQL Editor
-3. Copy the contents of `supabase-setup.sql` from this repository
+3. Copy the contents of `supabase-setup-multi-country.sql` from this repository
 4. Paste and run the SQL in the editor
-5. This will create all necessary tables, indexes, and security policies
+5. Supports 6+ countries: 🇨🇿 🇺🇸 🇩🇪 🇦🇹 🇵🇱 🇸🇰 (easy to add more!)
 
-**📖 For existing installations**: See [`MIGRATION_GUIDE.md`](./MIGRATION_GUIDE.md) to migrate from the old schema
+**Option 2: Czech-Only Setup**
+1. Use `supabase-setup.sql` for Czech Republic only
+2. Can upgrade to multi-country later
+
+**📖 See guides:**
+- [`MULTI_COUNTRY_ARCHITECTURE.md`](./MULTI_COUNTRY_ARCHITECTURE.md) - Architecture design and how to add countries
+- [`MIGRATION_GUIDE.md`](./MIGRATION_GUIDE.md) - Migrate from old schema
 
 #### Set Up Storage for Vehicle Images
 After running the migration, you need to set up Supabase Storage:
