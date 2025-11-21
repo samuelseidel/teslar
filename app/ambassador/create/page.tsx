@@ -1,10 +1,18 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { CZECH_REGIONS, TESLA_MODELS } from '@/lib/types/database.types'
+import { CZECH_REGIONS } from '@/lib/types/database.types'
+import {
+  TESLA_MODEL_NAMES,
+  getVariantsForModelAndYear,
+  getYearRangeForModel,
+  VARIANT_DESCRIPTIONS,
+  type TeslaModelName,
+  type TeslaVariantInfo,
+} from '@/lib/constants/tesla-variants'
 
 export default function CreateAmbassadorProfile() {
   const [loading, setLoading] = useState(false)
@@ -24,9 +32,45 @@ export default function CreateAmbassadorProfile() {
 
   const [vehicleData, setVehicleData] = useState({
     tesla_model: '',
+    tesla_variant: '',
     tesla_year: new Date().getFullYear(),
     description: '',
   })
+
+  const [availableVariants, setAvailableVariants] = useState<TeslaVariantInfo[]>([])
+  const [yearRange, setYearRange] = useState({ min: 2008, max: new Date().getFullYear() + 1 })
+
+  // Update year range when model changes
+  useEffect(() => {
+    if (vehicleData.tesla_model) {
+      const range = getYearRangeForModel(vehicleData.tesla_model as TeslaModelName)
+      setYearRange(range)
+
+      // Reset year if it's outside the new range
+      if (vehicleData.tesla_year < range.min || vehicleData.tesla_year > range.max) {
+        setVehicleData(prev => ({ ...prev, tesla_year: range.max }))
+      }
+    }
+  }, [vehicleData.tesla_model])
+
+  // Update available variants when model or year changes
+  useEffect(() => {
+    if (vehicleData.tesla_model && vehicleData.tesla_year) {
+      const variants = getVariantsForModelAndYear(
+        vehicleData.tesla_model as TeslaModelName,
+        vehicleData.tesla_year
+      )
+      setAvailableVariants(variants)
+
+      // Reset variant if it's no longer available for the selected year
+      if (vehicleData.tesla_variant) {
+        const isStillAvailable = variants.some(v => v.name === vehicleData.tesla_variant)
+        if (!isStillAvailable) {
+          setVehicleData(prev => ({ ...prev, tesla_variant: '' }))
+        }
+      }
+    }
+  }, [vehicleData.tesla_model, vehicleData.tesla_year])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -228,7 +272,8 @@ export default function CreateAmbassadorProfile() {
             {/* First Vehicle */}
             <div>
               <h2 className="text-xl font-semibold text-white mb-4">Vaše první Tesla</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-4">
+                {/* Model Selection */}
                 <div>
                   <label htmlFor="tesla_model" className="block text-sm font-medium text-gray-200 mb-1">
                     Model Tesly *
@@ -237,11 +282,11 @@ export default function CreateAmbassadorProfile() {
                     id="tesla_model"
                     required
                     value={vehicleData.tesla_model}
-                    onChange={(e) => setVehicleData({ ...vehicleData, tesla_model: e.target.value })}
+                    onChange={(e) => setVehicleData({ ...vehicleData, tesla_model: e.target.value, tesla_variant: '' })}
                     className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500"
                   >
                     <option value="" className="bg-gray-800">Vyberte model</option>
-                    {TESLA_MODELS.map((model) => (
+                    {TESLA_MODEL_NAMES.map((model) => (
                       <option key={model} value={model} className="bg-gray-800">
                         {model}
                       </option>
@@ -249,6 +294,7 @@ export default function CreateAmbassadorProfile() {
                   </select>
                 </div>
 
+                {/* Year Selection */}
                 <div>
                   <label htmlFor="tesla_year" className="block text-sm font-medium text-gray-200 mb-1">
                     Rok *
@@ -257,15 +303,58 @@ export default function CreateAmbassadorProfile() {
                     type="number"
                     id="tesla_year"
                     required
-                    min="2008"
-                    max={new Date().getFullYear() + 1}
+                    min={yearRange.min}
+                    max={yearRange.max}
                     value={vehicleData.tesla_year}
                     onChange={(e) => setVehicleData({ ...vehicleData, tesla_year: parseInt(e.target.value) })}
                     className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500"
                   />
+                  {vehicleData.tesla_model && (
+                    <p className="text-xs text-gray-400 mt-1">
+                      {vehicleData.tesla_model} byl vyráběn od {yearRange.min} do {yearRange.max === new Date().getFullYear() + 1 ? 'současnosti' : yearRange.max}
+                    </p>
+                  )}
                 </div>
 
-                <div className="md:col-span-2">
+                {/* Variant Selection - Only show if model and year are selected */}
+                {vehicleData.tesla_model && vehicleData.tesla_year && availableVariants.length > 0 && (
+                  <div>
+                    <label htmlFor="tesla_variant" className="block text-sm font-medium text-gray-200 mb-1">
+                      Varianta {availableVariants.length > 1 ? '' : '(volitelné)'}
+                    </label>
+                    <select
+                      id="tesla_variant"
+                      value={vehicleData.tesla_variant}
+                      onChange={(e) => setVehicleData({ ...vehicleData, tesla_variant: e.target.value })}
+                      className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+                    >
+                      <option value="" className="bg-gray-800">
+                        {availableVariants.length > 1 ? 'Vyberte variantu' : 'Bez specifikace'}
+                      </option>
+                      {availableVariants.map((variant) => (
+                        <option key={variant.name} value={variant.name} className="bg-gray-800">
+                          {variant.name}
+                          {VARIANT_DESCRIPTIONS[variant.name] && ` - ${VARIANT_DESCRIPTIONS[variant.name]}`}
+                        </option>
+                      ))}
+                    </select>
+                    <p className="text-xs text-gray-400 mt-1">
+                      Pro rok {vehicleData.tesla_year} je k dispozici {availableVariants.length} variant{availableVariants.length > 1 ? 'y' : 'a'}
+                    </p>
+                  </div>
+                )}
+
+                {/* No variants available message */}
+                {vehicleData.tesla_model && vehicleData.tesla_year && availableVariants.length === 0 && (
+                  <div className="rounded-md bg-yellow-500/20 border border-yellow-500 p-4">
+                    <p className="text-sm text-yellow-300">
+                      Pro {vehicleData.tesla_model} z roku {vehicleData.tesla_year} nejsou k dispozici žádné varianty. Zkontrolujte prosím rok výroby.
+                    </p>
+                  </div>
+                )}
+
+                {/* Description */}
+                <div>
                   <label htmlFor="vehicle_description" className="block text-sm font-medium text-gray-200 mb-1">
                     Popis vozidla
                   </label>
@@ -275,8 +364,11 @@ export default function CreateAmbassadorProfile() {
                     value={vehicleData.description}
                     onChange={(e) => setVehicleData({ ...vehicleData, description: e.target.value })}
                     className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500"
-                    placeholder="Např.: Dual Motor, Long Range, Autopilot, červená barva..."
+                    placeholder="Např.: Červená barva, 19&quot; kola, Premium interiér, rozšířený Autopilot..."
                   />
+                  <p className="text-xs text-gray-400 mt-1">
+                    Uveďte barvu, výbavu, dojezd, nebo jiné specifikace
+                  </p>
                 </div>
               </div>
             </div>
@@ -292,7 +384,7 @@ export default function CreateAmbassadorProfile() {
                 value={formData.bio}
                 onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
                 className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500"
-                placeholder="Řekněte potenciálním kupcům o své zkušenosti s Teslou. Co na ní milujete? Jak dlouho ji vlastníte?"
+                placeholder="Řekněte potenciálním kupcům o své zkušenosti s Teslou. Co na ní milujete? Jak dlouho ji vlastníte? Proč ji doporučujete?"
               />
             </div>
 
