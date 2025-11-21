@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
+import VehiclesSection from './components/VehiclesSection'
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -23,10 +24,13 @@ export default async function DashboardPage() {
     redirect('/ambassador/create')
   }
 
-  // Get contact requests
+  // Get contact requests with vehicle info
   const { data: contactRequests } = await supabase
     .from('contact_requests')
-    .select('*')
+    .select(`
+      *,
+      vehicle:vehicles(*)
+    `)
     .eq('ambassador_id', ambassador.id)
     .order('created_at', { ascending: false })
 
@@ -99,8 +103,11 @@ export default async function DashboardPage() {
           </div>
         </div>
 
+        {/* Vehicles Section */}
+        <VehiclesSection ambassadorId={ambassador.id} />
+
         {/* Contact Requests Section */}
-        <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 shadow-2xl border border-white/20">
+        <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 shadow-2xl border border-white/20 mt-8">
           <h2 className="text-2xl font-bold text-white mb-6">Contact Requests</h2>
 
           {!contactRequests || contactRequests.length === 0 ? (
@@ -121,6 +128,11 @@ export default async function DashboardPage() {
                   <div className="flex justify-between items-start mb-4">
                     <div>
                       <h3 className="text-xl font-semibold text-white">{request.buyer_name}</h3>
+                      {(request as any).vehicle && (
+                        <p className="text-red-400 text-sm font-medium">
+                          Interested in: {(request as any).vehicle.tesla_model} {(request as any).vehicle.tesla_variant} ({(request as any).vehicle.tesla_year})
+                        </p>
+                      )}
                       <p className="text-gray-400 text-sm">
                         {new Date(request.created_at).toLocaleDateString('en-US', {
                           year: 'numeric',
