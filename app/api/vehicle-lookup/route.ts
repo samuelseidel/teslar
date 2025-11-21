@@ -23,18 +23,30 @@ export async function GET(request: NextRequest) {
     }
 
     // Call the MDČ Portal API
+    console.log('Calling MDČ API:', { url: `${MDCR_API_URL}?vin=${vin}`, hasApiKey: !!MDCR_API_KEY })
+
     const response = await fetch(`${MDCR_API_URL}?vin=${vin}`, {
+      method: 'GET',
       headers: {
         'api_key': MDCR_API_KEY,
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'User-Agent': 'TeslaConnect/1.0',
       },
     })
 
     if (!response.ok) {
-      console.error('MDČ API HTTP Error:', response.status, response.statusText)
+      const errorText = await response.text()
+      console.error('MDČ API HTTP Error:', {
+        status: response.status,
+        statusText: response.statusText,
+        body: errorText,
+        headers: Object.fromEntries(response.headers.entries())
+      })
       return NextResponse.json(
         {
           success: false,
-          error: 'Chyba při komunikaci s API MDČ'
+          error: `Chyba při komunikaci s API MDČ (${response.status})`
         },
         { status: response.status }
       )
@@ -43,7 +55,11 @@ export async function GET(request: NextRequest) {
     const data = await response.json()
 
     // Log the response for debugging
-    console.log('MDČ API Response:', { Status: data.Status, hasData: !!data.Data })
+    console.log('MDČ API Response:', {
+      Status: data.Status,
+      hasData: !!data.Data,
+      vin: vin
+    })
 
     // Check the status code from the API
     if (data.Status === 3) {
