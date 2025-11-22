@@ -434,6 +434,87 @@ export default function VehicleDetailPage() {
             />
           </div>
         </div>
+
+        {/* How It Works Section */}
+        <div className="mt-12 bg-gradient-to-br from-white/5 to-white/10 backdrop-blur-lg rounded-2xl p-8 shadow-2xl border border-white/20">
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center mb-8">
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full mb-4">
+                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <h3 className="text-3xl font-bold text-white mb-3">Jak to funguje?</h3>
+              <p className="text-gray-300 text-lg">
+                TeslaConnect je komunitní platforma založená na dobrovolnosti a sdílené lásce k elektromobilitě
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-6 mb-8">
+              {/* Voluntary */}
+              <div className="bg-white/5 rounded-xl p-6 border border-white/10">
+                <div className="flex justify-center mb-4">
+                  <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center">
+                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                    </svg>
+                  </div>
+                </div>
+                <h4 className="text-white font-bold text-center mb-2">100% dobrovolnost</h4>
+                <p className="text-gray-300 text-sm text-center leading-relaxed">
+                  Ambasadoři sdílejí své zkušenosti dobrovolně, z nadšení pro elektromobilitu. Žádné povinnosti, jen čistá vášeň.
+                </p>
+              </div>
+
+              {/* Free */}
+              <div className="bg-white/5 rounded-xl p-6 border border-white/10">
+                <div className="flex justify-center mb-4">
+                  <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
+                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                </div>
+                <h4 className="text-white font-bold text-center mb-2">Zcela zdarma</h4>
+                <p className="text-gray-300 text-sm text-center leading-relaxed">
+                  Spojení s majiteli je bezplatné. Žádné skryté poplatky, žádné provize. Jen čestná komunita nadšenců.
+                </p>
+              </div>
+
+              {/* Gifts Welcome */}
+              <div className="bg-white/5 rounded-xl p-6 border border-white/10">
+                <div className="flex justify-center mb-4">
+                  <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg flex items-center justify-center">
+                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
+                    </svg>
+                  </div>
+                </div>
+                <h4 className="text-white font-bold text-center mb-2">Dárky vítány</h4>
+                <p className="text-gray-300 text-sm text-center leading-relaxed">
+                  Pokud si užijete čas s ambasadorem, malá pozornost (káva, palivo na nabíjení) je vždy oceněna, ale nikdy vyžadována.
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-gradient-to-r from-red-600/20 to-blue-600/20 rounded-xl p-6 border border-white/20">
+              <div className="flex items-start gap-4">
+                <div className="flex-shrink-0">
+                  <svg className="w-6 h-6 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                  </svg>
+                </div>
+                <div className="flex-1">
+                  <h5 className="text-white font-semibold mb-2">Náš cíl</h5>
+                  <p className="text-gray-200 text-sm leading-relaxed">
+                    Pomáháme lidem dělat informovaná rozhodnutí o přechodu na elektromobilitu prostřednictvím autentických zkušeností skutečných majitelů.
+                    Bez prodejního tlaku, jen upřímné odpovědi na vaše otázky.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Contact Form Modal */}
