@@ -434,21 +434,24 @@ export default function VehicleDetailPage() {
             />
           </div>
         </div>
+      </div>
 
-        {/* How It Works Section */}
-        <div className="mt-12 bg-white/5 rounded-xl p-8 border border-white/10">
-          <div className="max-w-3xl mx-auto">
-            <h3 className="text-2xl font-bold text-white mb-4">Jak to funguje?</h3>
-            <p className="text-gray-300 leading-relaxed">
-              TeslaConnect je komunitní platforma, kde se majitelé Tesly dobrovolně dělí o své zkušenosti se zájemci o elektromobilitu.
-              Vše je zcela zdarma – žádné poplatky, žádné provize. Ambasadoři sdílejí své znalosti z lásky k věci a radosti
-              z elektromobility. Pokud si užijete skvělý čas společně, malá pozornost jako káva nebo příspěvek na nabití potěší,
-              ale není to nikdy podmínka. Pomáháme lidem dělat informovaná rozhodnutí díky autentickým zkušenostem od skutečných
-              majitelů – bez prodejního tlaku, jen upřímné odpovědi na vaše otázky.
+      {/* Footer */}
+      <footer className="border-t border-white/10 py-12 px-4 bg-black/80 mt-12">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center space-y-4">
+            <p className="text-gray-400 text-lg">
+              <span className="text-white font-semibold">TeslaConnect</span> - Spojujeme majitele s budoucími majiteli
+            </p>
+            <p className="text-gray-500 text-sm">
+              Tato platforma není oficiálně spojena se společností Tesla, Inc.
+            </p>
+            <p className="text-gray-500 text-sm">
+              &copy; {new Date().getFullYear()} TeslaConnect. Všechna práva vyhrazena.
             </p>
           </div>
         </div>
-      </div>
+      </footer>
 
       {/* Contact Form Modal */}
       {showContactForm && (
