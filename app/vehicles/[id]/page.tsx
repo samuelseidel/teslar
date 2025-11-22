@@ -436,120 +436,44 @@ export default function VehicleDetailPage() {
         </div>
 
         {/* How It Works Section */}
-        <div className="mt-12 bg-gradient-to-br from-blue-900/20 via-purple-900/20 to-red-900/20 backdrop-blur-lg rounded-3xl p-8 md:p-12 shadow-2xl border border-white/20 overflow-hidden relative">
-          {/* Decorative background elements */}
-          <div className="absolute top-0 right-0 w-64 h-64 bg-red-500/10 rounded-full blur-3xl -z-10"></div>
-          <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl -z-10"></div>
+        <div className="mt-12 bg-white/5 rounded-xl p-8 border border-white/10">
+          <div className="max-w-4xl mx-auto">
+            <h3 className="text-3xl font-bold text-white mb-6 text-center">Jak to funguje?</h3>
 
-          <div className="max-w-5xl mx-auto relative z-10">
-            {/* Header */}
-            <div className="text-center mb-12">
-              <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl mb-6 shadow-lg shadow-blue-500/30 transform hover:scale-110 transition-transform">
-                <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                </svg>
+            <div className="grid md:grid-cols-3 gap-6 mb-6">
+              {/* Voluntary */}
+              <div className="text-center">
+                <div className="text-4xl mb-3">❤️</div>
+                <h4 className="text-white font-semibold mb-2">Dobrovolně</h4>
+                <p className="text-gray-300 text-sm">
+                  Ambasadoři sdílejí zkušenosti z vlastní vůle a nadšení pro elektromobilitu.
+                </p>
               </div>
-              <h3 className="text-4xl md:text-5xl font-bold text-white mb-4 leading-tight">
-                Jak to funguje?
-              </h3>
-              <p className="text-xl text-gray-200 max-w-3xl mx-auto leading-relaxed">
-                Jsme <span className="text-blue-400 font-semibold">komunita nadšenců</span>, kteří věří v sílu autentických zkušeností.
-                Žádné prodejce, žádný marketing – jen <span className="text-purple-400 font-semibold">reální lidé</span> sdílející svou vášeň.
+
+              {/* Free */}
+              <div className="text-center">
+                <div className="text-4xl mb-3">💯</div>
+                <h4 className="text-white font-semibold mb-2">Zdarma</h4>
+                <p className="text-gray-300 text-sm">
+                  Vše je zcela zdarma – žádné poplatky, žádné provize.
+                </p>
+              </div>
+
+              {/* Gifts Welcome */}
+              <div className="text-center">
+                <div className="text-4xl mb-3">☕</div>
+                <h4 className="text-white font-semibold mb-2">Dárky vítány</h4>
+                <p className="text-gray-300 text-sm">
+                  Malá pozornost (káva, nabití) je vítaná, ale ne nutná.
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-white/5 rounded-lg p-6 border border-white/10">
+              <p className="text-gray-200 text-center">
+                Pomáháme lidem rozhodnout se o elektromobilitě díky reálným zkušenostem od skutečných majitelů.
+                Bez prodejního tlaku, jen upřímné odpovědi.
               </p>
-            </div>
-
-            {/* Three Principles Cards */}
-            <div className="grid md:grid-cols-3 gap-6 mb-10">
-              {/* Voluntary - Enhanced */}
-              <div className="group bg-gradient-to-br from-white/10 to-white/5 rounded-2xl p-8 border border-white/20 hover:border-green-500/50 transition-all duration-300 hover:transform hover:scale-105 hover:shadow-xl hover:shadow-green-500/20">
-                <div className="flex justify-center mb-6">
-                  <div className="w-16 h-16 bg-gradient-to-br from-green-400 to-green-600 rounded-2xl flex items-center justify-center shadow-lg shadow-green-500/50 group-hover:shadow-green-500/70 transition-shadow">
-                    <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                    </svg>
-                  </div>
-                </div>
-                <h4 className="text-white font-bold text-xl text-center mb-3">Z lásky k věci</h4>
-                <p className="text-gray-200 text-center leading-relaxed">
-                  Každý ambasador je tady dobrovolně, protože <strong className="text-green-400">miluje</strong> elektromobilitu.
-                  Bez povinností, bez očekávání – jen čistá vášeň a radost ze sdílení.
-                </p>
-              </div>
-
-              {/* Free - Enhanced */}
-              <div className="group bg-gradient-to-br from-white/10 to-white/5 rounded-2xl p-8 border border-white/20 hover:border-blue-500/50 transition-all duration-300 hover:transform hover:scale-105 hover:shadow-xl hover:shadow-blue-500/20">
-                <div className="flex justify-center mb-6">
-                  <div className="w-16 h-16 bg-gradient-to-br from-blue-400 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/50 group-hover:shadow-blue-500/70 transition-shadow">
-                    <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-                    </svg>
-                  </div>
-                </div>
-                <h4 className="text-white font-bold text-xl text-center mb-3">Vždy zdarma</h4>
-                <p className="text-gray-200 text-center leading-relaxed">
-                  Spojení, rozhovory, zkušenosti – vše <strong className="text-blue-400">kompletně zdarma</strong>.
-                  Bez skrytých poplatků, bez provizí. Protože znalosti by měly být pro každého.
-                </p>
-              </div>
-
-              {/* Gifts Welcome - Enhanced */}
-              <div className="group bg-gradient-to-br from-white/10 to-white/5 rounded-2xl p-8 border border-white/20 hover:border-purple-500/50 transition-all duration-300 hover:transform hover:scale-105 hover:shadow-xl hover:shadow-purple-500/20">
-                <div className="flex justify-center mb-6">
-                  <div className="w-16 h-16 bg-gradient-to-br from-purple-400 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg shadow-purple-500/50 group-hover:shadow-purple-500/70 transition-shadow">
-                    <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
-                    </svg>
-                  </div>
-                </div>
-                <h4 className="text-white font-bold text-xl text-center mb-3">Pozornost potěší</h4>
-                <p className="text-gray-200 text-center leading-relaxed">
-                  Když si užijete skvělý čas, malé <strong className="text-purple-400">gesto vděčnosti</strong> vždy potěší –
-                  třeba káva nebo příspěvek na nabití. Ale nikdy to není podmínka!
-                </p>
-              </div>
-            </div>
-
-            {/* Mission Statement - Enhanced */}
-            <div className="bg-gradient-to-r from-red-600/30 via-purple-600/30 to-blue-600/30 rounded-2xl p-8 border-2 border-white/30 backdrop-blur-sm">
-              <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
-                <div className="flex-shrink-0">
-                  <div className="w-16 h-16 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-2xl flex items-center justify-center shadow-lg shadow-yellow-500/50">
-                    <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                    </svg>
-                  </div>
-                </div>
-                <div className="flex-1">
-                  <h5 className="text-white font-bold text-2xl mb-3">Naše mise</h5>
-                  <p className="text-gray-100 text-lg leading-relaxed">
-                    Pomáháme tisícům lidí učinit <strong className="text-yellow-300">nejlepší rozhodnutí</strong> ohledně
-                    elektromobility díky autentickým zkušenostem od skutečných majitelů.
-                    <span className="block mt-2 text-blue-200">
-                      Žádný prodejní tlak. Žádné předstírání. Jen upřímné odpovědi a sdílená vášeň pro udržitelnou budoucnost. 🌍⚡
-                    </span>
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Trust Indicators */}
-            <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="text-center p-4 bg-white/5 rounded-xl border border-white/10">
-                <div className="text-3xl font-bold text-blue-400 mb-1">100%</div>
-                <div className="text-sm text-gray-300">Autentické</div>
-              </div>
-              <div className="text-center p-4 bg-white/5 rounded-xl border border-white/10">
-                <div className="text-3xl font-bold text-green-400 mb-1">0 Kč</div>
-                <div className="text-sm text-gray-300">Poplatky</div>
-              </div>
-              <div className="text-center p-4 bg-white/5 rounded-xl border border-white/10">
-                <div className="text-3xl font-bold text-purple-400 mb-1">∞</div>
-                <div className="text-sm text-gray-300">Zkušenosti</div>
-              </div>
-              <div className="text-center p-4 bg-white/5 rounded-xl border border-white/10">
-                <div className="text-3xl font-bold text-red-400 mb-1">❤️</div>
-                <div className="text-sm text-gray-300">Komunita</div>
-              </div>
             </div>
           </div>
         </div>
