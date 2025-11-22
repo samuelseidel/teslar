@@ -44,7 +44,7 @@ export default async function DashboardPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <Link href="/" className="text-2xl font-bold text-white">
-              Tesla<span className="text-red-500">Connect</span>
+              Tesla<span className="text-red-600">Connect</span>
             </Link>
             <div className="flex items-center gap-4">
               <Link href="/dashboard/profile" className="text-gray-300 hover:text-white transition-colors">
@@ -89,7 +89,7 @@ export default async function DashboardPage() {
             <div className="flex flex-col sm:flex-row items-start sm:items-end gap-6 -mt-12 mb-6">
               {/* Profile Image */}
               <div className="relative">
-                <div className="w-32 h-32 rounded-full border-4 border-gray-900 bg-gradient-to-br from-red-500 to-red-700 overflow-hidden shadow-2xl">
+                <div className="w-32 h-32 rounded-full border-4 border-gray-900 bg-gradient-to-br from-red-600 to-red-700 overflow-hidden shadow-2xl">
                   {ambassador.profile_image_url ? (
                     <Image
                       src={ambassador.profile_image_url}
@@ -121,7 +121,7 @@ export default async function DashboardPage() {
                     {ambassador.available ? 'Dostupný' : 'Nedostupný'}
                   </span>
                   {ambassador.referral_code && (
-                    <span className="px-4 py-1.5 rounded-full text-sm font-medium bg-red-500/20 text-red-300 border border-red-500/50">
+                    <span className="px-4 py-1.5 rounded-full text-sm font-medium bg-red-600/20 text-red-300 border border-red-600/50">
                       Doporučení: {ambassador.referral_code}
                     </span>
                   )}
@@ -134,7 +134,7 @@ export default async function DashboardPage() {
               {/* Contact Information Card */}
               <div className="bg-white/5 rounded-xl p-6 border border-white/10">
                 <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                  <Mail className="w-5 h-5 text-red-400" />
+                  <Mail className="w-5 h-5 text-red-600" />
                   Kontaktní informace
                 </h3>
                 <div className="space-y-4">
@@ -158,15 +158,19 @@ export default async function DashboardPage() {
               {/* Location Card */}
               <div className="bg-white/5 rounded-xl p-6 border border-white/10">
                 <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                  <MapPin className="w-5 h-5 text-red-400" />
+                  <MapPin className="w-5 h-5 text-red-600" />
                   Lokace
                 </h3>
                 <div className="space-y-4">
                   <div className="flex items-start gap-3">
                     <MapPin className="w-5 h-5 text-gray-400 mt-0.5 flex-shrink-0" />
                     <div>
-                      <p className="text-xs text-gray-400 uppercase tracking-wide mb-1">Město a kraj</p>
-                      <p className="text-white">{ambassador.city}, {ambassador.region}</p>
+                      <p className="text-xs text-gray-400 uppercase tracking-wide mb-1">Adresa</p>
+                      <p className="text-white">
+                        {ambassador.city}
+                        {ambassador.zip_code && `, ${ambassador.zip_code}`}
+                      </p>
+                      <p className="text-gray-300 text-sm">{ambassador.region}</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
@@ -175,7 +179,7 @@ export default async function DashboardPage() {
                     </svg>
                     <div>
                       <p className="text-xs text-gray-400 uppercase tracking-wide mb-1">Země</p>
-                      <p className="text-white">{ambassador.country_code?.toUpperCase() || 'CZ'}</p>
+                      <p className="text-white">{ambassador.country} ({ambassador.country_code?.toUpperCase() || 'CZ'})</p>
                     </div>
                   </div>
                 </div>
@@ -185,7 +189,7 @@ export default async function DashboardPage() {
               {ambassador.bio && (
                 <div className="md:col-span-2 bg-white/5 rounded-xl p-6 border border-white/10">
                   <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                    <FileText className="w-5 h-5 text-red-400" />
+                    <FileText className="w-5 h-5 text-red-600" />
                     O mně
                   </h3>
                   <p className="text-gray-300 leading-relaxed">{ambassador.bio}</p>
@@ -215,13 +219,13 @@ export default async function DashboardPage() {
               {contactRequests.map((request) => (
                 <div
                   key={request.id}
-                  className="bg-white/5 border border-white/10 rounded-lg p-6 hover:border-red-500/50 transition-colors"
+                  className="bg-white/5 border border-white/10 rounded-lg p-6 hover:border-red-600/50 transition-colors"
                 >
                   <div className="flex justify-between items-start mb-4">
                     <div>
                       <h3 className="text-xl font-semibold text-white">{request.buyer_name}</h3>
                       {(request as any).vehicle && (
-                        <p className="text-red-400 text-sm font-medium">
+                        <p className="text-red-600 text-sm font-medium">
                           Zájem o: {(request as any).vehicle.tesla_model} {(request as any).vehicle.tesla_variant} ({(request as any).vehicle.tesla_year})
                         </p>
                       )}
@@ -239,14 +243,14 @@ export default async function DashboardPage() {
                   <div className="space-y-2 mb-4">
                     <div>
                       <span className="text-gray-400 text-sm">E-mail: </span>
-                      <a href={`mailto:${request.buyer_email}`} className="text-red-400 hover:text-red-300">
+                      <a href={`mailto:${request.buyer_email}`} className="text-red-600 hover:text-red-700">
                         {request.buyer_email}
                       </a>
                     </div>
                     {request.buyer_phone && (
                       <div>
                         <span className="text-gray-400 text-sm">Telefon: </span>
-                        <a href={`tel:${request.buyer_phone}`} className="text-red-400 hover:text-red-300">
+                        <a href={`tel:${request.buyer_phone}`} className="text-red-600 hover:text-red-700">
                           {request.buyer_phone}
                         </a>
                       </div>
