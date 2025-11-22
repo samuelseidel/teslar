@@ -5,25 +5,52 @@ import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { User } from '@supabase/supabase-js'
 import { useRouter } from 'next/navigation'
+import { Ambassador } from '@/lib/types/database.types'
 
 export default function Navigation() {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
   const [showUserMenu, setShowUserMenu] = useState(false)
+  const [ambassador, setAmbassador] = useState<Ambassador | null>(null)
   const router = useRouter()
 
   useEffect(() => {
     const supabase = createClient()
 
     // Get initial user
-    supabase.auth.getUser().then(({ data: { user } }) => {
+    supabase.auth.getUser().then(async ({ data: { user } }) => {
       setUser(user)
+
+      // Fetch ambassador profile if user is logged in
+      if (user) {
+        const { data: ambassadorData } = await supabase
+          .from('ambassadors')
+          .select('*')
+          .eq('user_id', user.id)
+          .single()
+
+        setAmbassador(ambassadorData)
+      }
+
       setLoading(false)
     })
 
     // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
       setUser(session?.user ?? null)
+
+      // Fetch ambassador profile when user logs in
+      if (session?.user) {
+        const { data: ambassadorData } = await supabase
+          .from('ambassadors')
+          .select('*')
+          .eq('user_id', session.user.id)
+          .single()
+
+        setAmbassador(ambassadorData)
+      } else {
+        setAmbassador(null)
+      }
     })
 
     return () => subscription.unsubscribe()
@@ -62,11 +89,19 @@ export default function Navigation() {
                   onClick={() => setShowUserMenu(!showUserMenu)}
                   className="flex items-center gap-2 text-gray-300 hover:text-white transition-colors"
                 >
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-red-600 to-red-700 flex items-center justify-center">
-                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
-                  </div>
+                  {ambassador?.profile_image_url ? (
+                    <img
+                      src={ambassador.profile_image_url}
+                      alt="Profile"
+                      className="w-8 h-8 rounded-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-red-600 to-red-700 flex items-center justify-center">
+                      <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                      </svg>
+                    </div>
+                  )}
                   <span className="hidden sm:inline">{user.email?.split('@')[0]}</span>
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />

@@ -22,6 +22,7 @@ export interface Ambassador {
   first_name: string
   last_name: string
   phone: string | null
+  street_address: string | null // Full street address with house number (e.g., "K Meteoru 759/22")
   city: string
   region: string // Administrative division (state, kraj, Bundesland, etc.)
   country: string // Country name (localized)

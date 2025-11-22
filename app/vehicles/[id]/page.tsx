@@ -436,6 +436,137 @@ export default function VehicleDetailPage() {
         </div>
       </div>
 
+      {/* Footer */}
+      <footer className="border-t border-white/10 bg-gradient-to-b from-black/80 to-black mt-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Main Footer Content */}
+          <div className="py-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
+            {/* Brand Column */}
+            <div className="space-y-4">
+              <Link href="/" className="inline-block">
+                <h3 className="text-2xl font-bold text-white">
+                  Tesla<span className="text-red-600">Connect</span>
+                </h3>
+              </Link>
+              <p className="text-gray-400 text-sm leading-relaxed">
+                Spojujeme majitele vozidel Tesla se zájemci o elektromobilitu. Autentické zkušenosti, žádný prodejní tlak.
+              </p>
+              {/* Social Media Icons */}
+              <div className="flex gap-3 pt-2">
+                <a
+                  href="#"
+                  className="w-10 h-10 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 flex items-center justify-center transition-all group"
+                  aria-label="Instagram"
+                >
+                  <svg className="w-5 h-5 text-gray-400 group-hover:text-white transition-colors" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                  </svg>
+                </a>
+                <a
+                  href="#"
+                  className="w-10 h-10 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 flex items-center justify-center transition-all group"
+                  aria-label="Facebook"
+                >
+                  <svg className="w-5 h-5 text-gray-400 group-hover:text-white transition-colors" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                  </svg>
+                </a>
+                <a
+                  href="#"
+                  className="w-10 h-10 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 flex items-center justify-center transition-all group"
+                  aria-label="X (Twitter)"
+                >
+                  <svg className="w-5 h-5 text-gray-400 group-hover:text-white transition-colors" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                  </svg>
+                </a>
+              </div>
+            </div>
+
+            {/* For Buyers Column */}
+            <div className="space-y-4">
+              <h4 className="text-white font-semibold text-sm uppercase tracking-wider">Pro zájemce</h4>
+              <ul className="space-y-3">
+                <li>
+                  <Link href="/vehicles" className="text-gray-400 hover:text-white transition-colors text-sm flex items-center group">
+                    <span className="w-1.5 h-1.5 rounded-full bg-red-600 mr-2 opacity-0 group-hover:opacity-100 transition-opacity"></span>
+                    Prohlédnout vozidla
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/vehicles" className="text-gray-400 hover:text-white transition-colors text-sm flex items-center group">
+                    <span className="w-1.5 h-1.5 rounded-full bg-red-600 mr-2 opacity-0 group-hover:opacity-100 transition-opacity"></span>
+                    Najít ambasadora
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/#how-it-works" className="text-gray-400 hover:text-white transition-colors text-sm flex items-center group">
+                    <span className="w-1.5 h-1.5 rounded-full bg-red-600 mr-2 opacity-0 group-hover:opacity-100 transition-opacity"></span>
+                    Jak to funguje
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+            {/* For Ambassadors Column */}
+            <div className="space-y-4">
+              <h4 className="text-white font-semibold text-sm uppercase tracking-wider">Pro majitele</h4>
+              <ul className="space-y-3">
+                <li>
+                  <Link href="/auth/signup" className="text-gray-400 hover:text-white transition-colors text-sm flex items-center group">
+                    <span className="w-1.5 h-1.5 rounded-full bg-red-600 mr-2 opacity-0 group-hover:opacity-100 transition-opacity"></span>
+                    Stát se ambasadorem
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/auth/login" className="text-gray-400 hover:text-white transition-colors text-sm flex items-center group">
+                    <span className="w-1.5 h-1.5 rounded-full bg-red-600 mr-2 opacity-0 group-hover:opacity-100 transition-opacity"></span>
+                    Přihlásit se
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/dashboard" className="text-gray-400 hover:text-white transition-colors text-sm flex items-center group">
+                    <span className="w-1.5 h-1.5 rounded-full bg-red-600 mr-2 opacity-0 group-hover:opacity-100 transition-opacity"></span>
+                    Dashboard
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+            {/* Legal Column */}
+            <div className="space-y-4">
+              <h4 className="text-white font-semibold text-sm uppercase tracking-wider">Právní informace</h4>
+              <ul className="space-y-3">
+                <li>
+                  <Link href="/legal/terms" className="text-gray-400 hover:text-white transition-colors text-sm flex items-center group">
+                    <span className="w-1.5 h-1.5 rounded-full bg-red-600 mr-2 opacity-0 group-hover:opacity-100 transition-opacity"></span>
+                    Podmínky používání
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/legal/privacy" className="text-gray-400 hover:text-white transition-colors text-sm flex items-center group">
+                    <span className="w-1.5 h-1.5 rounded-full bg-red-600 mr-2 opacity-0 group-hover:opacity-100 transition-opacity"></span>
+                    Ochrana osobních údajů
+                  </Link>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Bottom Bar */}
+          <div className="border-t border-white/10 py-6">
+            <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+              <p className="text-gray-500 text-sm text-center md:text-left">
+                &copy; {new Date().getFullYear()} TeslaConnect. Všechna práva vyhrazena.
+              </p>
+              <p className="text-gray-500 text-xs text-center md:text-right">
+                Tato platforma není oficiálně spojena se společností Tesla, Inc.
+              </p>
+            </div>
+          </div>
+        </div>
+      </footer>
+
       {/* Contact Form Modal */}
       {showContactForm && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
