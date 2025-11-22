@@ -443,6 +443,14 @@ export default function VehicleDetailPage() {
             <p className="text-gray-400 text-lg">
               <span className="text-white font-semibold">TeslaConnect</span> - Spojujeme majitele s budoucími majiteli
             </p>
+            <div className="flex justify-center gap-6 text-sm">
+              <Link href="/legal/terms" className="text-gray-400 hover:text-white transition-colors">
+                Podmínky používání
+              </Link>
+              <Link href="/legal/privacy" className="text-gray-400 hover:text-white transition-colors">
+                Ochrana osobních údajů
+              </Link>
+            </div>
             <p className="text-gray-500 text-sm">
               Tato platforma není oficiálně spojena se společností Tesla, Inc.
             </p>
