@@ -7,7 +7,7 @@ export default function Home() {
       <Navigation />
 
       {/* Hero Section - Full Viewport */}
-      <section className="min-h-screen flex items-center justify-center px-4 relative overflow-hidden">
+      <section className="min-h-screen flex items-center justify-center px-4 relative overflow-hidden bg-gradient-to-b from-black/40 to-transparent">
         {/* Animated background elements */}
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute -top-40 -right-40 w-80 h-80 bg-red-500/10 rounded-full blur-3xl"></div>
@@ -108,7 +108,7 @@ export default function Home() {
       </section>
 
       {/* For Buyers Section - Full Viewport */}
-      <section className="min-h-screen flex items-center justify-center px-4 py-20 bg-white/5">
+      <section className="min-h-screen flex items-center justify-center px-4 py-20 bg-gray-900/50">
         <div className="max-w-6xl mx-auto w-full">
           <div className="grid md:grid-cols-2 gap-16 items-center">
             {/* Left side - Content */}
@@ -163,7 +163,7 @@ export default function Home() {
       </section>
 
       {/* For Owners Section - Full Viewport */}
-      <section className="min-h-screen flex items-center justify-center px-4 py-20">
+      <section className="min-h-screen flex items-center justify-center px-4 py-20 bg-white/5">
         <div className="max-w-6xl mx-auto w-full">
           <div className="grid md:grid-cols-2 gap-16 items-center">
             {/* Left side - Visual element */}
@@ -266,7 +266,7 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-white/10 py-12 px-4 bg-black/50">
+      <footer className="border-t border-white/10 py-12 px-4 bg-black/80">
         <div className="max-w-7xl mx-auto">
           <div className="text-center space-y-4">
             <p className="text-gray-400 text-lg">
