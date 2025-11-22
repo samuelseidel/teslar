@@ -437,44 +437,15 @@ export default function VehicleDetailPage() {
 
         {/* How It Works Section */}
         <div className="mt-12 bg-white/5 rounded-xl p-8 border border-white/10">
-          <div className="max-w-4xl mx-auto">
-            <h3 className="text-3xl font-bold text-white mb-6 text-center">Jak to funguje?</h3>
-
-            <div className="grid md:grid-cols-3 gap-6 mb-6">
-              {/* Voluntary */}
-              <div className="text-center">
-                <div className="text-4xl mb-3">❤️</div>
-                <h4 className="text-white font-semibold mb-2">Dobrovolně</h4>
-                <p className="text-gray-300 text-sm">
-                  Ambasadoři sdílejí zkušenosti z vlastní vůle a nadšení pro elektromobilitu.
-                </p>
-              </div>
-
-              {/* Free */}
-              <div className="text-center">
-                <div className="text-4xl mb-3">💯</div>
-                <h4 className="text-white font-semibold mb-2">Zdarma</h4>
-                <p className="text-gray-300 text-sm">
-                  Vše je zcela zdarma – žádné poplatky, žádné provize.
-                </p>
-              </div>
-
-              {/* Gifts Welcome */}
-              <div className="text-center">
-                <div className="text-4xl mb-3">☕</div>
-                <h4 className="text-white font-semibold mb-2">Dárky vítány</h4>
-                <p className="text-gray-300 text-sm">
-                  Malá pozornost (káva, nabití) je vítaná, ale ne nutná.
-                </p>
-              </div>
-            </div>
-
-            <div className="bg-white/5 rounded-lg p-6 border border-white/10">
-              <p className="text-gray-200 text-center">
-                Pomáháme lidem rozhodnout se o elektromobilitě díky reálným zkušenostem od skutečných majitelů.
-                Bez prodejního tlaku, jen upřímné odpovědi.
-              </p>
-            </div>
+          <div className="max-w-3xl mx-auto">
+            <h3 className="text-2xl font-bold text-white mb-4">Jak to funguje?</h3>
+            <p className="text-gray-300 leading-relaxed">
+              TeslaConnect je komunitní platforma, kde se majitelé Tesly dobrovolně dělí o své zkušenosti se zájemci o elektromobilitu.
+              Vše je zcela zdarma – žádné poplatky, žádné provize. Ambasadoři sdílejí své znalosti z lásky k věci a radosti
+              z elektromobility. Pokud si užijete skvělý čas společně, malá pozornost jako káva nebo příspěvek na nabití potěší,
+              ale není to nikdy podmínka. Pomáháme lidem dělat informovaná rozhodnutí díky autentickým zkušenostem od skutečných
+              majitelů – bez prodejního tlaku, jen upřímné odpovědi na vaše otázky.
+            </p>
           </div>
         </div>
       </div>
