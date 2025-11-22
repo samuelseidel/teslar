@@ -166,6 +166,9 @@ export default async function DashboardPage() {
                     <MapPin className="w-5 h-5 text-gray-400 mt-0.5 flex-shrink-0" />
                     <div>
                       <p className="text-xs text-gray-400 uppercase tracking-wide mb-1">Adresa</p>
+                      {ambassador.street_address && (
+                        <p className="text-white">{ambassador.street_address}</p>
+                      )}
                       <p className="text-white">
                         {ambassador.city}
                         {ambassador.zip_code && `, ${ambassador.zip_code}`}

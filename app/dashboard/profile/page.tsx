@@ -30,6 +30,7 @@ export default function ProfileSettingsPage() {
     instagram_url: '',
     facebook_url: '',
     x_url: '',
+    street_address: '',
     city: '',
     region: '',
     country: '',
@@ -75,6 +76,7 @@ export default function ProfileSettingsPage() {
         instagram_url: ambassadorData.instagram_url || '',
         facebook_url: ambassadorData.facebook_url || '',
         x_url: ambassadorData.x_url || '',
+        street_address: ambassadorData.street_address || '',
         city: ambassadorData.city || '',
         region: ambassadorData.region || '',
         country: ambassadorData.country || '',
@@ -94,6 +96,7 @@ export default function ProfileSettingsPage() {
   const handleAddressSelect = (address: AddressComponents) => {
     setFormData({
       ...formData,
+      street_address: address.street || '',
       city: address.city,
       region: address.region,
       country: address.country,
